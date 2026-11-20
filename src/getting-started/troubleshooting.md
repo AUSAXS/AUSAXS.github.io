@@ -16,6 +16,10 @@ Please refer to the following if you encounter any issues.
 
     The folder pip installed `ausaxs` into is not on your `PATH`. The [installation](installation.md) page shows how to add it. Until then, `python -m pyausaxs` works in place of `ausaxs` in every command, e.g. `python -m pyausaxs --version`.
 
+??? question "`ausaxs gui` says Tk or `_tkinter` is missing?"
+
+    The graphical interface uses Tk, which comes with your Python installation rather than from pip, so `pip install pyausaxs[gui]` cannot add it. Install it with your system's package manager instead, e.g. `sudo apt install python3-tk` on Debian and Ubuntu, `sudo dnf install python3-tkinter` on Fedora, or `brew install python-tk` for Homebrew's Python on macOS. The Python installers from python.org and conda already include it.
+
 ??? question "Windows: why do I get SmartScreen warnings?"
 
     The Microsoft SmartScreen filter may warn you about potential security risks when running AUSAXS for the first time. You should be able to ignore this warning by clicking "More info" and then "Run anyway". Removing this notice from our end requires a yearly fee to sign our program, which we are currently unable to support.
