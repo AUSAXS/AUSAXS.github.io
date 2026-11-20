@@ -3,12 +3,12 @@
 
 Fits bovine serum albumin (PDB 4f5s), keeping its explicit hydrogens, to the SEC-SANS measurement SASDWB3 in
 100% D2O, exactly as in the page's example, and draws it like the SAXS fit figure (see build_fit_figure.py). Both files are
-downloaded from SASBDB. The BSA drawing in the corner is figures/bsa-molecule.svg, made by build_molecule_drawing.py. Writes sans-fit.svg and sans-fit-dark.svg to docs/src/assets/figures/; use them as a pair:
+downloaded from SASBDB. The BSA drawing in the corner is figures/bsa-molecule.svg, made by build_molecule_drawing.py. Writes sans-fit.svg and sans-fit-dark.svg to src/assets/figures/; use them as a pair:
 
     ![alt](../assets/figures/sans-fit.svg#only-light)
     ![alt](../assets/figures/sans-fit-dark.svg#only-dark)
 
-Needs pyausaxs and matplotlib. Usage: python docs/scripts/build_sans_fit_figure.py
+Needs pyausaxs and matplotlib. Usage: python scripts/build_sans_fit_figure.py
 """
 import io
 import re

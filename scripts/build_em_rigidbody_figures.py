@@ -2,7 +2,7 @@
 """Build the figures shown on the EM validation and rigid-body refinement application pages.
 
 Runs the same command-line calls as the pages' examples, on the SARS-CoV-2 main protease (SASBDB SASDJG5), and
-draws the results in the site's colours. Writes two pairs to docs/src/assets/figures/:
+draws the results in the site's colours. Writes two pairs to src/assets/figures/:
 
     em-validation.svg, em-validation-dark.svg  the chi2 landscape and the fit at its minimum (em.md)
     rigidbody-fit.svg, rigidbody-fit-dark.svg  the fit before and after refinement (rigid-body-refinement.md)
@@ -16,7 +16,7 @@ The data are read from tests/files, which the pages link to, and the configurati
 rigid-body-refinement.md. The rigid-body refinement is stochastic, so its figure changes slightly with every build.
 
 Needs the ausaxs command-line tool and matplotlib. Set AUSAXS to the executable if it is not on the path.
-Usage: python docs/scripts/build_em_rigidbody_figures.py
+Usage: python scripts/build_em_rigidbody_figures.py
 """
 import io
 import os

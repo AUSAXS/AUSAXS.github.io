@@ -2,7 +2,7 @@
 """Build the benchmark figures from the results of tests/benchmark/benchmark_paper.
 
 Reads results.jsonl and iq/ from the benchmark's output folder (default output/paper_benchmark) and draws the
-figures in the site's colours. Writes these pairs to docs/src/assets/figures/:
+figures in the site's colours. Writes these pairs to src/assets/figures/:
 
     benchmark-scaling-sas.svg, ...-dark.svg                 the SAXS fits only
     benchmark-scaling-debye.svg, ...-dark.svg               the pure Debye sum only
@@ -20,9 +20,9 @@ Points are the mean of the timed runs. A single run over the benchmark's time bu
 an open marker without a line. Deviations are |I/I_exact - 1| after removing each program's constant normalisation
 (AUSAXS sums over ordered pairs, twice DebyeCalculator's sum). The reference is the exact Debye sum in float64, computed
 here from integer squared distances (see structure_sum); no program is the judge. The SAS programs' vacuum profiles come
-from docs/scripts/run_sas_accuracy.py.
+from scripts/run_sas_accuracy.py.
 
-Needs numpy and matplotlib. Usage: python docs/scripts/build_benchmark_figures.py [output/paper_benchmark [local results]]
+Needs numpy and matplotlib. Usage: python scripts/build_benchmark_figures.py [output/paper_benchmark [local results]]
 """
 import io
 import json
@@ -45,7 +45,7 @@ RESULTS = DOCS.parent / "output" / "paper_benchmark"
 # AUSAXS_BENCH_CPU_MAX_ATOMS=300000. Its last GPU sizes are missing: the run took down the desktop the GPU also drives.
 LOCAL_RESULTS = DOCS.parent / "output" / "paper_benchmark_local"
 
-# Site colours from docs/src/stylesheets/extra.css; AUSAXS wears the site's gold. Programs that are compared directly
+# Site colours from src/stylesheets/extra.css; AUSAXS wears the site's gold. Programs that are compared directly
 # (the three SAS competitors; the two Debye competitors) are separated under protan, deutan and tritan simulation (OKLab
 # ΔE ≥ 9.4 against each other and AUSAXS). Every program also has its own marker, so identity never rests on colour.
 THEMES = {
@@ -72,7 +72,7 @@ ACCURACY_SAS_STRUCTURE = "SASDME4"
 # AES-Debye use the same parametrisation.
 AG_FORM_FACTOR = ((6.073874, 17.155437, 4.173344, 0.852238, 17.988686),
                   (0.055333, 7.896512, 28.443739, 110.376106, 0.716809), 0.756603)
-# The competitors run by docs/scripts/run_sas_accuracy.py: (program, label)
+# The competitors run by scripts/run_sas_accuracy.py: (program, label)
 SAS_PROGRAMS = (("crysol", "CRYSOL"), ("pepsi-saxs", "Pepsi-SAXS"), ("foxs", "FoXS"))
 # calibration molecules of run_sas_accuracy.py, by the name in the first line of their file
 SAS_CALIBRATION = {"one atom": np.zeros((1, 3)), "two atoms 3 A apart": np.array([[0, 0, -1.5], [0, 0, 1.5]])}

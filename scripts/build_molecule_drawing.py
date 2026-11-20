@@ -7,7 +7,7 @@ outlines are drawn in black on top. This is the style of the lysozyme drawing in
 
 Writes figures/<name>-molecule.svg. Needs PyMOL, so run it with the system Python that has it:
 
-    /usr/bin/python3 docs/scripts/build_molecule_drawing.py <structure file> <name>
+    /usr/bin/python3 scripts/build_molecule_drawing.py <structure file> <name>
 """
 import sys
 import tempfile

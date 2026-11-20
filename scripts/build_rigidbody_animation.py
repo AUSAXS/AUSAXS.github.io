@@ -3,7 +3,7 @@
 
 Refines the five domains of LAR1-2 against its SAXS data, saving the structure after every accepted move as an .xyz
 trajectory, and animates the Cα trace of the trajectory. (A save directly inside optimize_once would also record the
-trial conformations of rejected moves.) Writes a pair to docs/src/assets/figures/:
+trial conformations of rejected moves.) Writes a pair to src/assets/figures/:
 
     rigidbody-trajectory.gif, rigidbody-trajectory-dark.gif
 
@@ -16,7 +16,7 @@ The refinement is stochastic, so the animation changes with every build. The dat
 which is not under version control.
 
 Needs the ausaxs command-line tool, matplotlib and pillow. Set AUSAXS to the executable if it is not on the path.
-Usage: python docs/scripts/build_rigidbody_animation.py
+Usage: python scripts/build_rigidbody_animation.py
 """
 import os
 import subprocess

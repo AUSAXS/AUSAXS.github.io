@@ -3,12 +3,12 @@
 
 Fits 2epe.pdb to 2epe.dat with pyAUSAXS, exactly as in the page's example, and draws the fit in the site's
 colours. The stylized molecule from figures/saxs-decomposition.svg is embedded, as vector graphics, in the
-bottom-left corner. Writes saxs-fit.svg and saxs-fit-dark.svg to docs/src/assets/figures/; use them as a pair:
+bottom-left corner. Writes saxs-fit.svg and saxs-fit-dark.svg to src/assets/figures/; use them as a pair:
 
     ![alt](../assets/figures/saxs-fit.svg#only-light)
     ![alt](../assets/figures/saxs-fit-dark.svg#only-dark)
 
-Needs pyausaxs and matplotlib. Usage: python docs/scripts/build_fit_figure.py
+Needs pyausaxs and matplotlib. Usage: python scripts/build_fit_figure.py
 """
 import io
 import re
@@ -31,7 +31,7 @@ DATA = DOCS.parent / "tests" / "files"
 MOLECULE_ID = "g170"
 MOLECULE_VIEWBOX = (77.0, 16.5, 27.5, 23.5)
 
-# Colours from docs/src/stylesheets/extra.css. Both schemes draw on a transparent background.
+# Colours from src/stylesheets/extra.css. Both schemes draw on a transparent background.
 THEMES = {
     "light": {"ink": "#1f2733", "muted": "#57606a", "line": "#d3dae3", "data": "#3a4556", "fit": "#b07c12"},
     "dark":  {"ink": "#e6edf3", "muted": "#8b949e", "line": "#3a4556", "data": "#c9d1d9", "fit": "#e3b341"},

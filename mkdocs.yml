@@ -1,17 +1,17 @@
 site_name: AUSAXS
-site_url: https://ausaxs.github.io/AUSAXS/
+site_url: https://ausaxs.github.io/
 site_description: >-
   AUSAXS calculates SAXS and SANS profiles from atomic structures with the
   Debye equation, and fits PDB/CIF models and EM maps to small-angle scattering data.
 site_author: Kristian Lytje
 repo_url: https://github.com/AUSAXS/AUSAXS
 repo_name: AUSAXS/AUSAXS
-edit_uri: edit/master/docs/src/
+edit_uri: https://github.com/AUSAXS/AUSAXS.github.io/edit/main/src/
 copyright: AUSAXS is free software under the LGPL-3.0 license.
 
-# Paths are relative to this file. The built site lands in the repository root, where the Pages workflow uploads it from.
+# Paths are relative to this file. The built site lands in site/, which the Pages workflow uploads.
 docs_dir: src
-site_dir: ../site
+site_dir: site
 
 theme:
   name: material

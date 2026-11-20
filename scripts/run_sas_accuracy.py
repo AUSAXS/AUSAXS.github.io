@@ -23,7 +23,7 @@ Writes, into <output>:
     iq/<program>_default_<label>.dat            q and the vacuum intensity of the protein
     iq/<program>_default_calibration.dat        the same for the calibration molecule; the first line says which
 
-Usage: python docs/scripts/run_sas_accuracy.py <structure.pdb> [output/paper_benchmark]
+Usage: python scripts/run_sas_accuracy.py <structure.pdb> [output/paper_benchmark]
 with AUSAXS_BENCH_CRYSOL, AUSAXS_BENCH_PEPSI, AUSAXS_BENCH_FOXS and their _LIBS, as for benchmark_paper, and pyausaxs.
 """
 import os

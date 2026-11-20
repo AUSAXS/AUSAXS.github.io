@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Build the published documentation figures from their Inkscape sources.
 
-Each docs/figures/<name>.svg is an Inkscape file kept for editing. This script writes two cleaned copies to
-docs/src/assets/figures/: <name>.svg for the light scheme and <name>-dark.svg for the dark one. Use them in the
+Each figures/<name>.svg is an Inkscape file kept for editing. This script writes two cleaned copies to
+src/assets/figures/: <name>.svg for the light scheme and <name>-dark.svg for the dark one. Use them in the
 docs as a pair:
 
     ![alt](../assets/figures/<name>.svg#only-light)
@@ -16,7 +16,7 @@ and everything inside it then has its colours swapped according to DARK_COLOURS;
 Mark what borders the transparent background (text, outer outlines) and leave inner lines alone. A marked <use>
 clone does not recolour the original it points to; mark the original instead.
 
-Usage: python docs/scripts/build_figures.py
+Usage: python scripts/build_figures.py
 """
 import re
 import sys

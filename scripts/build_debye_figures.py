@@ -2,7 +2,7 @@
 """Build the figures shown on the crystals and powder diffraction application pages.
 
 Calculates the scattering of the silver nanoparticle Ag_crystal.cif with pyAUSAXS, exactly as in the pages' examples,
-and draws it in the site's colours. Writes two pairs to docs/src/assets/figures/:
+and draws it in the site's colours. Writes two pairs to src/assets/figures/:
 
     crystal-debye.svg, crystal-debye-dark.svg    I(q) up to q = 10 Å⁻¹ (crystals.md)
     powder-pattern.svg, powder-pattern-dark.svg  I(2θ) for Cu Kα radiation (powder-diffraction.md)
@@ -12,7 +12,7 @@ Use each as a pair:
     ![alt](../assets/figures/<name>.svg#only-light)
     ![alt](../assets/figures/<name>-dark.svg#only-dark)
 
-Needs pyausaxs and matplotlib. Usage: python docs/scripts/build_debye_figures.py
+Needs pyausaxs and matplotlib. Usage: python scripts/build_debye_figures.py
 """
 import io
 import sys
