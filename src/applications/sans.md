@@ -8,6 +8,9 @@ hide:
 
 # Small-angle neutron scattering (SANS)
 
+> [!WARNING]
+> SANS support is a new feature and still in active development. It works, but the fit parameters occasionally fail to converge. If you run into convergence problems or any other errors, please [open an issue](https://github.com/AUSAXS/AUSAXS/issues/new) so we can fix them.
+
 <span class="ausaxs-name"><span class="au">AU</span>SAXS</span> calculates the SANS profile of a protein or other biomolecule directly from its atomic model, and fits it to measured data. It uses the same pipeline as for [SAXS](saxs.md); only the scattering of the atoms and the solvent changes.
 
 ## What changes for neutrons

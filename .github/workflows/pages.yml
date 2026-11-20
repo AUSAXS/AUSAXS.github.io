@@ -1,10 +1,14 @@
 name: Publish site
 
-# Publishes on every push to main. Pull requests only build the site, to catch broken links and anchors.
+# Publishes on every push to main, and daily so that a new AUSAXS release shows up (the documentation of the C++
+# tools is fetched from the latest release, see scripts/fetch_docs.py). Pull requests only build the site, to catch
+# broken links and anchors.
 on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: "17 4 * * *"
   pull_request:
 
 permissions:
@@ -23,6 +27,11 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
+      # TEMPORARY: no release contains docs/ yet, so fetch from master. Remove AUSAXS_DOCS_REF once one does (BL-344 in AUSAXS-agent-notes).
+      - run: python scripts/fetch_docs.py
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          AUSAXS_DOCS_REF: master
       - run: mkdocs build --strict
         env:
           NO_MKDOCS_2_WARNING: 1

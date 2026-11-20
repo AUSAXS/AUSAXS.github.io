@@ -1,2 +1,5 @@
 site/
 __pycache__/
+
+# fetched from the latest AUSAXS release by scripts/fetch_docs.py
+/src/documentation/*/

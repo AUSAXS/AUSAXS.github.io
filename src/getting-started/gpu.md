@@ -8,6 +8,9 @@ hide:
 
 # GPU acceleration
 
+> [!WARNING]
+> GPU acceleration is a new feature and still in active development. On Linux it works well with both NVIDIA and AMD GPUs, and on Windows AMD GPUs should work and NVIDIA GPUs possibly do, but it has had many issues there. So far it has only been tested by its developer. If you encounter any difficulties or errors, please [open an issue](https://github.com/AUSAXS/AUSAXS-GPU/issues/new) with your operating system and GPU model.
+
 AUSAXS runs on the CPU by default to keep the package size small. To use a GPU, you need to download and install a separate ~300 MB AUSAXS GPU driver, which links AUSAXS to your graphics card. The driver supports NVIDIA and AMD GPUs on Linux (x86-64) and Windows (x86-64).
 
 ??? question "Is your platform or GPU not supported?"
