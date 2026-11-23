@@ -12,7 +12,7 @@ import pyausaxs as ausaxs
 
 mol = ausaxs.create_molecule("2epe.pdb")
 mol.hydrate()
-q, I = mol.debye()                 # the SAXS profile, as two NumPy arrays
+q, I = mol.debye()                 # the SAXS profile, as two numpy arrays
 fit = mol.fit("2epe.dat")          # fit it to a measurement
 print(fit.chi2r(), fit.fit_parameters())
 ```
@@ -23,11 +23,10 @@ python -m pip install pyausaxs
 ```
 
 ## Why use AUSAXS from Python?
-- **No files in between.** The command-line tools read files and write files. From Python, you pass structures and data in as files or arrays, and get the profile, the fit, the distance histogram or the atomic coordinates back as arrays, ready for NumPy, SciPy and matplotlib.
-- **Fast enough to call in a loop.** Hydrating lysozyme and calculating its profile takes milliseconds, so you can compute thousands of profiles: one per frame of an [MD trajectory](trajectories.md), per member of an ensemble, or per step of your own optimizer.
-- **The same engine as the command line.** pyAUSAXS calls the same library as `ausaxs fit`, with the same hydration shell, excluded volume models and fitting. With the same settings, Python and the command line give the same result, up to the random placement of the hydration shell.
-- **Fits into your own analysis.** Use AUSAXS as one step of a larger pipeline: evaluate the model for [parameters of your choice](fitting.md#custom-fits-and-objectives) inside your own fit, or use [the gradient of the Debye equation](gradients.md) to refine coordinates or train a model with PyTorch.
-- **Command line and graphical interface included.** Installing pyAUSAXS also installs the `ausaxs` command and its [graphical interface](../documentation/cli/fit.md#graphical-user-interface), so there is nothing else to set up.
+- **A straightforward Python workflow.** With just a bit of Python you can read a structure, calculate its profile, and fit it to data, without learning a new command-line interface or its arguments. Results come back as NumPy arrays, ready to inspect, plot, or use in the rest of your script.
+- **Fits into your own analysis.** For more advanced integration, pass structures, coordinates, or measured data in from your own code and use the resulting profiles in whatever analysis tool you need: from PyTorch model training with [the gradient of the Debye equation](gradients.md) to [analysis of MD trajectories](trajectories.md).
+- **High performance when it matters.** pyAUSAXS delegates the numerical work to the compiled AUSAXS C++ backend, so large parameter scans do not require giving up Python. A hydrated lysozyme profile takes milliseconds, making high-throughput calculations practical for an [MD trajectory](trajectories.md), an ensemble or your own optimizer.
+- **One installation, several ways to work.** `pip install pyausaxs` provides the Python API and prebuilt libraries for Linux, macOS and Windows. Optional extras add plotting and the graphical interface, while the same package also provides the `ausaxs` command-line tools, including `ausaxs plot`. Move between scripts, notebooks, the terminal and the [GUI](../documentation/cli/fit.md#graphical-user-interface) without maintaining separate installations.
 
 ## Guides
 

@@ -2,12 +2,12 @@
 title: Why AUSAXS? - AUSAXS
 description: "Why use AUSAXS for SAXS, SANS, and Debye calculations: fast on CPU and GPU, accurate Debye equation, and transparent about every assumption."
 hide:
-  - toc
+  - navigation
 ---
 
 # Why <span class="ausaxs-name"><span class="au">AU</span>SAXS</span>?
 
-AUSAXS is built on three principles: use the full Debye equation, make it fast, and tell the user everything it does.
+AUSAXS is built on three principles: use the full Debye equation, make it fast, and tell the user everything it does. It is [easy to install with pyAUSAXS](pyausaxs/index.md), whether you want to use the Python API, the command-line tools or the graphical interface.
 
 ## Speed
 
