@@ -5,7 +5,7 @@ description: Reference documentation for the AUSAXS command-line tools, the GPU 
 
 # Documentation
 
-This section is the reference for the AUSAXS command-line tools: every argument, output file and configuration option. For an introduction to what each tool is used for, see the [applications](../applications/index.md); for worked examples on real data, see the [tutorials](../tutorials.md).
+This section is the reference for the AUSAXS command-line tools: every argument, output file and configuration option. The Python interface has its own [API reference](../pyausaxs/reference/index.md). For an introduction to what each tool is used for, see the [applications](../applications/index.md); for worked examples on real data, see the [tutorials](../tutorials.md).
 
 ## Command-line tools
 

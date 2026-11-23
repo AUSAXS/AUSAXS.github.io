@@ -27,11 +27,13 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
-      # TEMPORARY: no release contains docs/ yet, so fetch from master. Remove AUSAXS_DOCS_REF once one does (BL-344 in AUSAXS-agent-notes).
+      # TEMPORARY: no release contains docs/ yet, so fetch from master. Remove AUSAXS_DOCS_REF and PYAUSAXS_DOCS_REF once
+      # one does (BL-344 in AUSAXS-agent-notes).
       - run: python scripts/fetch_docs.py
         env:
           GITHUB_TOKEN: ${{ github.token }}
           AUSAXS_DOCS_REF: master
+          PYAUSAXS_DOCS_REF: master
       - run: mkdocs build --strict
         env:
           NO_MKDOCS_2_WARNING: 1
