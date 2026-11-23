@@ -1,6 +1,6 @@
 ---
 title: "AUSAXS: the fast small-angle scattering calculator"
-description: "Landing page for AUSAXS: the fastest SAXS, SANS, and Debye calculator. Fit atomic models and EM maps to small-angle scattering data."
+description: "Landing page for AUSAXS: a fast SAXS, SANS, and Debye calculator. Fit atomic models and EM maps to small-angle scattering data."
 hide:
   - navigation
   - toc
