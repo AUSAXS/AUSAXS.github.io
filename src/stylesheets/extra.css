@@ -1097,3 +1097,117 @@
     transition: none;
   }
 }
+
+/* Run buttons for the runnable Python examples (javascripts/run-python.js): a bar attached below the code block, and
+   the output of the run below that. */
+.md-typeset .highlight.run pre {
+  margin-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.md-typeset .highlight.run code[contenteditable] {
+  outline: none;
+}
+
+.md-typeset .highlight.run code[contenteditable]:focus {
+  box-shadow: inset 0 0 0 1px var(--ausaxs-gold-line);
+}
+
+.md-typeset .ausaxs-run__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0.6rem;
+  margin-bottom: 1em;
+  font-size: 0.7rem;
+  background-color: var(--md-code-bg-color);
+  border-top: 1px solid var(--ausaxs-code-border);
+  border-radius: 0 0 0.1rem 0.1rem;
+}
+
+.md-typeset .ausaxs-run__bar:has(+ .ausaxs-run__output:not([hidden])) {
+  margin-bottom: 0;
+}
+
+.md-typeset .ausaxs-run__button,
+.md-typeset .ausaxs-run__reset {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 0.2rem;
+  padding: 0.15rem 0.7rem;
+  transition: background-color 125ms, color 125ms;
+}
+
+.md-typeset .ausaxs-run__button {
+  font-weight: 600;
+  color: var(--md-primary-bg-color);
+  background-color: var(--ausaxs-gold);
+}
+
+.md-typeset .ausaxs-run__button::before {
+  content: "▶";
+  font-size: 0.75em;
+  margin-right: 0.4em;
+}
+
+.md-typeset .ausaxs-run__button:hover:not(:disabled) {
+  background-color: var(--ausaxs-gold-hover);
+}
+
+.md-typeset .ausaxs-run__button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .ausaxs-run__button {
+  color: var(--md-default-bg-color);
+}
+
+.md-typeset .ausaxs-run__reset {
+  color: var(--md-default-fg-color--light);
+  box-shadow: inset 0 0 0 1px var(--ausaxs-code-border);
+}
+
+.md-typeset .ausaxs-run__reset:hover {
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset .ausaxs-run__status {
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .ausaxs-run__output {
+  margin-bottom: 1em;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--ausaxs-code-border);
+  border-top: none;
+  border-radius: 0 0 0.1rem 0.1rem;
+}
+
+.md-typeset .ausaxs-run__output pre {
+  margin: 0;
+  font-size: 0.75em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.md-typeset .ausaxs-run__output pre + pre,
+.md-typeset .ausaxs-run__output img {
+  margin-top: 0.5rem;
+}
+
+.md-typeset .ausaxs-run__output img {
+  display: block;
+  max-width: 100%;
+  background: #fff; /* matplotlib figures are drawn on white */
+}
+
+.md-typeset .ausaxs-run__log {
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .ausaxs-run__warn,
+.md-typeset .ausaxs-run__error {
+  color: var(--ausaxs-red);
+}

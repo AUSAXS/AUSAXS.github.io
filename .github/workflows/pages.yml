@@ -42,6 +42,18 @@ jobs:
         with:
           path: site
 
+  # Runs every block with a Run button in Pyodide, with the latest pyAUSAXS from PyPI, as the browser does. It does not
+  # hold up the deployment: a failure here means an example broke, e.g. with a new pyAUSAXS release, not the site.
+  examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --prefix tests/examples --no-audit --no-fund
+      - run: node tests/examples/run_examples.mjs
+
   deploy:
     if: github.event_name != 'pull_request'
     needs: build

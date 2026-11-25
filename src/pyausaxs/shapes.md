@@ -9,7 +9,7 @@ pyAUSAXS calculates the scattering of any homogeneous body you can describe with
 
 ## A sphere
 Describe the shape by a function of the coordinates in Å that is true inside it, and give the half-width of the box to search:
-```python
+```python {.run}
 import numpy as np
 import pyausaxs as ausaxs
 
@@ -19,14 +19,14 @@ q, I = sphere.debye()
 print(len(sphere), sphere.volume)    # number of cells, and their total volume in Å³
 ```
 The function is called once on whole arrays of coordinates, so write it with NumPy operations. `debye()` uses the [default q axis](first-steps.md#units-and-q-range), or takes q values of your own. The intensity is on an absolute scale, with unit density: at q = 0 it equals the volume squared. For a sphere, it agrees with the exact form factor:
-```python
+```python {.run}
 x = q*R
 I_exact = (4*np.pi*R**3*(np.sin(x) - x*np.cos(x))/x**3)**2
 ```
 
 ## Other shapes
 Any condition that NumPy can evaluate describes a shape. The box is searched from `-extent` to `extent` along each axis; give one extent per axis for elongated shapes:
-```python
+```python {.run}
 # a cylinder of radius 20 Å and length 100 Å along z
 cylinder = ausaxs.shape.lattice(lambda x, y, z: (x**2 + y**2 <= 20**2) & (np.abs(z) <= 50), extent=(20, 20, 50))
 
@@ -41,7 +41,7 @@ shell = ausaxs.shape.lattice(lambda x, y, z: (x**2 + y**2 + z**2 <= 30**2) & (x*
 A smaller spacing follows the surface of the body more closely, and gives a better profile at high q, at the cost of more cells. The distances between the cells are counted with a fast Fourier transform, so even millions of cells are fast: a sphere of radius 30 Å at a spacing of 0.25 Å has about 7 million cells, and takes a few seconds. As a rule, keep the spacing well below the smallest feature of the shape, and check that halving it does not change the profile in the q range you need.
 
 For your own lattices, e.g. cells read from a voxel map, create the body directly from the cell centres, which must lie on one lattice with the given spacing:
-```python
+```python {.run}
 cells = np.array([[0, 0, 0], [1, 0, 0], [0, 1, 0]], dtype=float)
 body = ausaxs.shape.Lattice(cells, spacing=1)
 q, I = body.debye()

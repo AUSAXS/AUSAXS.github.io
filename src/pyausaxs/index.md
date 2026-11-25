@@ -7,14 +7,15 @@ description: "pyAUSAXS is the Python package of AUSAXS: calculate SAXS and SANS 
 
 pyAUSAXS is the Python interface to <span class="ausaxs-name"><span class="au">AU</span>SAXS</span>. It runs the same C++ engine as the command-line tools, and returns every result as a NumPy array. Read a structure, add a hydration shell, calculate its SAXS profile and fit it to data, all in a few lines of Python:
 
-```python
+```python {.run}
 import pyausaxs as ausaxs
+import matplotlib
 
 mol = ausaxs.create_molecule("2epe.pdb")
 mol.hydrate()
 q, I = mol.debye()                 # the SAXS profile, as two numpy arrays
 fit = mol.fit("2epe.dat")          # fit it to a measurement
-print(fit.chi2r(), fit.fit_parameters())
+fit.plot()
 ```
 
 It installs with `pip`, and comes with prebuilt libraries for Linux, macOS and Windows:
@@ -73,6 +74,8 @@ python -m pip install pyausaxs
 The [applications](../applications/index.md) pages show pyAUSAXS next to the command line for [SAXS](../applications/saxs.md), [SANS](../applications/sans.md), [rigid-body refinement](../applications/rigid-body-refinement.md), [crystals and nanoparticles](../applications/crystals.md) and [powder diffraction](../applications/powder-diffraction.md). Every function and setting is listed in the [API reference](reference/index.md).
 
 ## Examples
+Examples with a **Run** button run in your browser, with no installation: [Pyodide](https://pyodide.org/) runs Python there, with the same pyAUSAXS package that `pip` installs. You can edit the code before you run it. The first run downloads Python and pyAUSAXS, about 15 MB, and takes a few seconds; after that, the browser keeps them.
+
 The [pyAUSAXS examples](https://github.com/AUSAXS/pyAUSAXS/tree/master/examples) are complete, runnable scripts, from a basic Debye calculation to model fitting, distance histograms, crystal scattering and homogeneous shapes. The structure and data files they use are in the [test files](https://github.com/AUSAXS/pyAUSAXS/tree/master/tests/files) of the repository.
 
 ## Citing pyAUSAXS

@@ -6,7 +6,7 @@ description: "Fit atomic structures to SAXS data in Python with pyAUSAXS: fitted
 # Fitting SAXS data in Python
 
 ## Fitting a structure to data
-```python
+```python {.run}
 import pyausaxs as ausaxs
 import matplotlib.pyplot as plt
 
@@ -22,7 +22,7 @@ plt.show()
 `plot()` draws the data with the fitted curve, and the residuals below, and returns the matplotlib figure. It needs matplotlib, which is installed with `pyausaxs[plots]`.
 
 ## Reading the result
-```python
+```python {.run}
 fit.chi2()               # chi-square
 fit.dof()                # degrees of freedom: data points minus fitted parameters
 fit.chi2r()              # reduced chi-square, chi2/dof
@@ -48,7 +48,7 @@ The model compared with the data is `a·I(q) + b`, where `I(q)` is the profile f
 
 ## What is fitted
 `ausaxs.settings.fit` chooses which parameters are fitted, besides `a` and `b`:
-```python
+```python {.run}
 ausaxs.settings.exv(ausaxs.ExvModel.fraser)
 ausaxs.settings.fit(
     fit_hydration=True,          # cw: almost always wanted
@@ -61,7 +61,7 @@ The default `simple` excluded volume model has no excluded volume parameter, so 
 
 ## Comparing models
 Since a fit takes milliseconds, it is easy to compare several models on the same data:
-```python
+```python {.run}
 data = ausaxs.read_data("2epe.dat")
 for model in (ausaxs.ExvModel.simple, ausaxs.ExvModel.fraser, ausaxs.ExvModel.grid):
     ausaxs.settings.exv(model)
@@ -71,7 +71,7 @@ for model in (ausaxs.ExvModel.simple, ausaxs.ExvModel.fraser, ausaxs.ExvModel.gr
 
 ## Custom fits and objectives
 `mol.fit` minimises the chi-square over the enabled parameters. To use your own objective, add your own parameters, or fit several datasets at once, use `ausaxs.manual_fit` instead. It evaluates the model profile for parameter values you choose, and leaves the fitting to you:
-```python
+```python {.run}
 import numpy as np
 from scipy.optimize import minimize_scalar
 

@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "description": "Runs the runnable Python examples of the site in Pyodide under Node.js; see run_examples.mjs",
+  "type": "module",
+  "dependencies": {
+    "pyodide": "314.0.8"
+  }
+}

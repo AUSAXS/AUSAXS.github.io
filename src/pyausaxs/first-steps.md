@@ -18,14 +18,15 @@ If it fails, see the [troubleshooting](../getting-started/troubleshooting.md) pa
 
 The examples in this guide use the structure of hen egg-white lysozyme, [2epe.pdb](https://raw.githubusercontent.com/AUSAXS/AUSAXS/master/tests/files/2epe.pdb), and a SAXS measurement of it, [2epe.dat](https://raw.githubusercontent.com/AUSAXS/AUSAXS/master/tests/files/2epe.dat). Download both into the folder you run Python from.
 
+To try the examples without installing anything, press the **Run** button below them: they run in your browser, with both files already in place. The examples on a page build on each other, like the cells of a notebook, so running one also runs the examples above it that have not run yet.
 ## The building blocks
 Everything is imported from one module, by convention as `ausaxs`:
-```python
+```python {.run}
 import pyausaxs as ausaxs
 ```
 
 **Molecules.** `ausaxs.create_molecule` reads a structure from a PDB, mmCIF or XYZ file. The molecule holds the atoms with their form factors and its hydration shell, and calculates everything else: the scattering profile, the distance histogram, the radius of gyration, and fits.
-```python
+```python {.run}
 mol = ausaxs.create_molecule("2epe.pdb")
 mol.hydrate()              # place a hydration shell around it
 q, I = mol.debye()         # its SAXS profile
@@ -33,13 +34,13 @@ print(mol.Rg())            # its radius of gyration in Å
 ```
 
 **Datasets.** `ausaxs.read_data` reads a measured profile with columns q, I and its error. For data that is already in memory, `ausaxs.create_datafile(q, I, Ierr)` does the same from three arrays.
-```python
+```python {.run}
 data = ausaxs.read_data("2epe.dat")
 q, I, Ierr = data.data()
 ```
 
 **Fit results.** `mol.fit(data)` fits the molecule to a dataset, and returns the goodness of fit, the fitted parameters and the fitted curve. It also accepts the path of a data file directly.
-```python
+```python {.run}
 fit = mol.fit(data)
 print(fit.chi2r())             # reduced chi-square
 q, I, Ierr = fit.data_curve()  # the data used in the fit
@@ -47,7 +48,7 @@ I_fit = fit.fitted_curve()     # the model at the same q values
 ```
 
 **Settings.** `ausaxs.settings` holds every option of the calculations, such as the [excluded volume model](scattering-profiles.md#excluded-volume-models), which [parameters are fitted](fitting.md#what-is-fitted), and the q range. The settings apply to everything you calculate after changing them, until you change them again or call `ausaxs.settings.reset()`.
-```python
+```python {.run}
 ausaxs.settings.exv(ausaxs.ExvModel.fraser)
 ausaxs.settings.fit(fit_excluded_volume=True)
 ```
@@ -59,12 +60,12 @@ ausaxs.settings.fit(fit_excluded_volume=True)
 
 ## Output messages
 AUSAXS prints what it is doing, such as the number of atoms it read, and warns about anything unusual in the input. To keep it quiet:
-```python
+```python {.run}
 ausaxs.settings.general(verbose=False)                  # no progress messages
 ausaxs.settings.general(verbose=False, warnings=False)  # nothing at all
 ```
 To show the messages somewhere else, for instance in a log or a GUI, pass a function that receives each message:
-```python
+```python {.run}
 messages = []
 ausaxs.set_output_callback(messages.append)
 mol = ausaxs.create_molecule("2epe.pdb")

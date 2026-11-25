@@ -19,7 +19,7 @@ The gradient is that of the [plain Debye sum](scattering-profiles.md#the-plain-d
 
 ## Refining coordinates with SciPy
 This example moves 60 point scatterers until their profile matches a target, with the gradient passed to SciPy's L-BFGS optimizer:
-```python
+```python {.run}
 import numpy as np
 import pyausaxs as ausaxs
 from scipy.optimize import minimize
