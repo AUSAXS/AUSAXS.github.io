@@ -68,6 +68,23 @@ nav:
       - Crystals and nanoparticles: applications/crystals.md
       - Powder diffraction: applications/powder-diffraction.md
   - Tutorials: tutorials.md
+  - pyAUSAXS:
+      - Overview: pyausaxs/index.md
+      - First steps: pyausaxs/first-steps.md
+      - Guides:
+          - SAXS profiles: pyausaxs/scattering-profiles.md
+          - Fitting data: pyausaxs/fitting.md
+          - MD trajectories: pyausaxs/trajectories.md
+          - Gradients: pyausaxs/gradients.md
+          - Geometric shapes: pyausaxs/shapes.md
+      - API reference:
+          - Overview: pyausaxs/reference/index.md
+          - Molecules: pyausaxs/reference/molecules.md
+          - Data and structure files: pyausaxs/reference/data.md
+          - Fitting: pyausaxs/reference/fitting.md
+          - Settings: pyausaxs/reference/settings.md
+          - Rigid-body refinement: pyausaxs/reference/rigidbody.md
+          - Utilities: pyausaxs/reference/utilities.md
   - Documentation:
       - Overview: documentation/index.md
       - Command-line tools:
@@ -81,6 +98,7 @@ nav:
       - Developers:
           - Running the tests: documentation/developers/tests.md
       - Citing AUSAXS: documentation/citing.md
+  - About: about.md
 
 markdown_extensions:
   - admonition
@@ -116,11 +134,13 @@ extra:
 
 extra_javascript:
   - javascripts/katex.js
+  - javascripts/run-python.js
   - https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js
   - https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js
 
 hooks:
   - hooks/nowrap_code.py
+  - hooks/edit_url.py
 
 extra_css:
   - https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css

@@ -1097,3 +1097,194 @@
     transition: none;
   }
 }
+
+/* Run buttons for the runnable Python examples (javascripts/run-python.js): a bar attached below the code block, and
+   the output of the run below that. */
+.md-typeset .highlight.run pre {
+  margin-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* A block that continues from the blocks above it is marked by an icon beside its copy button. It explains itself on
+   hover, but is not a button, so it stays dimmer than the buttons and does not light up. */
+.md-typeset .md-code__button.ausaxs-run__continues,
+.md-typeset :hover > * > .md-code__button.ausaxs-run__continues {
+  color: var(--md-default-fg-color--lighter);
+  opacity: 0.7;
+  cursor: help;
+}
+
+.md-typeset .md-code__button.ausaxs-run__continues::after {
+  /* Material Design Icons: subdirectory-arrow-right */
+  --ausaxs-continues-icon: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 15l-6 6-1.42-1.42L15.17 16H4V4h2v10h9.17l-3.59-3.58L13 9l6 6z"/></svg>');
+  -webkit-mask-image: var(--ausaxs-continues-icon);
+  mask-image: var(--ausaxs-continues-icon);
+}
+
+.md-typeset .highlight.run code[contenteditable] {
+  outline: none;
+}
+
+.md-typeset .highlight.run code[contenteditable]:focus {
+  box-shadow: inset 0 0 0 1px var(--ausaxs-gold-line);
+}
+
+.md-typeset .ausaxs-run__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0.6rem;
+  margin-bottom: 1em;
+  font-size: 0.7rem;
+  background-color: var(--md-code-bg-color);
+  border-top: 1px solid var(--ausaxs-code-border);
+  border-radius: 0 0 0.1rem 0.1rem;
+}
+
+.md-typeset .ausaxs-run__bar:has(+ .ausaxs-run__output:not([hidden])) {
+  margin-bottom: 0;
+}
+
+.md-typeset .ausaxs-run__button,
+.md-typeset .ausaxs-run__reset {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 0.2rem;
+  padding: 0.15rem 0.7rem;
+  transition: background-color 125ms, color 125ms;
+}
+
+.md-typeset .ausaxs-run__button {
+  font-weight: 600;
+  color: var(--md-primary-bg-color);
+  background-color: var(--ausaxs-gold);
+}
+
+.md-typeset .ausaxs-run__button::before {
+  content: "▶";
+  font-size: 0.75em;
+  margin-right: 0.4em;
+}
+
+.md-typeset .ausaxs-run__button:hover:not(:disabled) {
+  background-color: var(--ausaxs-gold-hover);
+}
+
+.md-typeset .ausaxs-run__button:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+[data-md-color-scheme="slate"] .md-typeset .ausaxs-run__button {
+  color: var(--md-default-bg-color);
+}
+
+.md-typeset .ausaxs-run__reset {
+  color: var(--md-default-fg-color--light);
+  box-shadow: inset 0 0 0 1px var(--ausaxs-code-border);
+}
+
+.md-typeset .ausaxs-run__reset:hover {
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset .ausaxs-run__status {
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .ausaxs-run__output {
+  margin-bottom: 1em;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--ausaxs-code-border);
+  border-top: none;
+  border-radius: 0 0 0.1rem 0.1rem;
+}
+
+.md-typeset .ausaxs-run__output pre {
+  margin: 0;
+  font-size: 0.75em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 24em; /* long output, such as a settings file, scrolls instead of stretching the page */
+  overflow-y: auto;
+}
+
+.md-typeset .ausaxs-run__output pre + pre,
+.md-typeset .ausaxs-run__output img {
+  margin-top: 0.5rem;
+}
+
+.md-typeset .ausaxs-run__output img {
+  display: block;
+  max-width: 100%;
+  background: #fff; /* matplotlib figures are drawn on white */
+}
+
+.md-typeset .ausaxs-run__log {
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .ausaxs-run__warn,
+.md-typeset .ausaxs-run__error {
+  color: var(--ausaxs-red);
+}
+
+/* Logos of the funding agencies (footer) and universities (About page). All SVGs are single-colour with transparent
+   cut-outs, so `brightness(0) invert(1)` turns them white on dark backgrounds without losing detail. The row's
+   font-size sets the logo height; a logo whose text is large for its height sets `--logo-scale` below 1 in its
+   style attribute, so that the logos in a row carry the same visual weight. */
+.ausaxs-sponsors {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ausaxs-sponsors img {
+  display: block;
+  width: auto;
+}
+
+.ausaxs-sponsors--footer {
+  gap: 0.6rem 1.4rem;
+  margin: 0.8rem 0 0.6rem;
+}
+
+.ausaxs-sponsors--footer img {
+  font-size: 2rem;
+  height: calc(var(--logo-scale, 1) * 1em);
+  filter: brightness(0) invert(1);
+  opacity: 0.55;
+  transition: opacity 125ms;
+}
+
+.ausaxs-sponsors--footer a:hover img,
+.ausaxs-sponsors--footer a:focus-visible img {
+  opacity: 0.9;
+}
+
+.md-footer-meta .ausaxs-sponsors__label {
+  color: var(--md-footer-fg-color--lighter);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.md-footer-meta .ausaxs-sponsors__label:hover {
+  color: var(--md-footer-fg-color--light);
+}
+
+.md-typeset .ausaxs-sponsors--page {
+  gap: 1.5rem 3rem;
+  margin: 1.2rem 0 1.6rem;
+}
+
+.md-typeset .ausaxs-sponsors--page img {
+  font-size: 3.2rem;
+  height: calc(var(--logo-scale, 1) * 1em);
+}
+
+[data-md-color-scheme="slate"] .md-typeset .ausaxs-sponsors--page img {
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
+}

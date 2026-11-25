@@ -27,11 +27,13 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
-      # TEMPORARY: no release contains docs/ yet, so fetch from master. Remove AUSAXS_DOCS_REF once one does (BL-344 in AUSAXS-agent-notes).
+      # TEMPORARY: no release contains docs/ yet, so fetch from master. Remove AUSAXS_DOCS_REF and PYAUSAXS_DOCS_REF once
+      # one does (BL-344 in AUSAXS-agent-notes).
       - run: python scripts/fetch_docs.py
         env:
           GITHUB_TOKEN: ${{ github.token }}
           AUSAXS_DOCS_REF: master
+          PYAUSAXS_DOCS_REF: master
       - run: mkdocs build --strict
         env:
           NO_MKDOCS_2_WARNING: 1
@@ -39,6 +41,18 @@ jobs:
         if: github.event_name != 'pull_request'
         with:
           path: site
+
+  # Runs every block with a Run button in Pyodide, with the latest pyAUSAXS from PyPI, as the browser does. It does not
+  # hold up the deployment: a failure here means an example broke, e.g. with a new pyAUSAXS release, not the site.
+  examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install --prefix tests/examples --no-audit --no-fund
+      - run: node tests/examples/run_examples.mjs
 
   deploy:
     if: github.event_name != 'pull_request'

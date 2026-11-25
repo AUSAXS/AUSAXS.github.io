@@ -2,12 +2,12 @@
 title: Why AUSAXS? - AUSAXS
 description: "Why use AUSAXS for SAXS, SANS, and Debye calculations: fast on CPU and GPU, accurate Debye equation, and transparent about every assumption."
 hide:
-  - toc
+  - navigation
 ---
 
 # Why <span class="ausaxs-name"><span class="au">AU</span>SAXS</span>?
 
-AUSAXS is built on three principles: use the full Debye equation, make it fast, and tell the user everything it does.
+AUSAXS is built on three principles: use the full Debye equation, make it fast, and tell the user everything it does. It is [easy to install with pyAUSAXS](pyausaxs/index.md), whether you want to use the Python API, the command-line tools or the graphical interface.
 
 ## Speed
 
@@ -79,4 +79,4 @@ And it is [open source](https://github.com/AUSAXS/AUSAXS), so anything else can 
 
 ## One engine, many applications
 
-The same calculation drives [SAXS](applications/saxs.md), [SANS](applications/sans.md), [rigid-body refinement](applications/rigid-body-refinement.md), [EM map validation](applications/em.md), [crystals and nanoparticles](applications/crystals.md) and [powder diffraction](applications/powder-diffraction.md). It runs on Linux, macOS and Windows, from the command line, [Python](https://github.com/AUSAXS/pyAUSAXS) or a [graphical interface](documentation/cli/fit.md#graphical-user-interface), and [installs](getting-started/installation.md) with a single command.
+The same calculation drives [SAXS](applications/saxs.md), [SANS](applications/sans.md), [rigid-body refinement](applications/rigid-body-refinement.md), [EM map validation](applications/em.md), [crystals and nanoparticles](applications/crystals.md) and [powder diffraction](applications/powder-diffraction.md). It runs on Linux, macOS and Windows, from the command line, [Python](pyausaxs/index.md) or a [graphical interface](documentation/cli/fit.md#graphical-user-interface), and [installs](getting-started/installation.md) with a single command.

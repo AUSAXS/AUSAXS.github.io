@@ -86,7 +86,7 @@ If something goes wrong, see the [troubleshooting](getting-started/troubleshooti
 
 <div class="grid cards" markdown>
 
--   :material-language-python:{ .lg .middle } **[Python API](https://github.com/AUSAXS/pyAUSAXS)**
+-   :material-language-python:{ .lg .middle } **[Python API](pyausaxs/index.md)**
 
     ---
 

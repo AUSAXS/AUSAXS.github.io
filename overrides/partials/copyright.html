@@ -1,4 +1,5 @@
-{#- Material's copyright partial, with a citation line added under the license notice. -#}
+{#- Material's copyright partial, with a citation line added under the license notice and the logos of the
+    agencies funding AUSAXS below it. The universities are credited on the About page. -#}
 <div class="md-copyright">
   {% if config.copyright %}
     <div class="md-copyright__highlight">
@@ -8,6 +9,15 @@
   <div class="md-copyright__highlight">
     If you use AUSAXS in your work, please <a href="{{ 'documentation/citing/' | url }}">cite it</a>:
     K. Lytje and J. S. Pedersen, <em>J. Appl. Cryst.</em> 58, 1332–1346 (2025).
+  </div>
+  <div class="ausaxs-sponsors ausaxs-sponsors--footer">
+    <a class="ausaxs-sponsors__label" href="{{ 'about/#funding' | url }}">Funded by</a>
+    <a href="https://dff.dk/en" title="Independent Research Fund Denmark">
+      <img src="{{ 'assets/sponsors/dff.svg' | url }}" alt="Independent Research Fund Denmark" loading="lazy">
+    </a>
+    <a href="https://www.dfg.de/" title="Deutsche Forschungsgemeinschaft">
+      <img src="{{ 'assets/sponsors/dfg.svg' | url }}" alt="Deutsche Forschungsgemeinschaft" loading="lazy" style="--logo-scale: 0.62">
+    </a>
   </div>
   {% if not config.extra.generator == false %}
     Made with

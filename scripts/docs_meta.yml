@@ -1,28 +1,53 @@
-# Front matter for the pages fetched from the AUSAXS repository (title, description, theme options).
-# Those pages are kept free of mkdocs metadata there, so it is added back by fetch_docs.py.
-cli/debye.md:
-  title: Debye scattering of atomic structures - AUSAXS
-  description: 'ausaxs debye: Debye scattering of crystals, nanoparticles and atomic structures without solvent, as a powder pattern in 2θ or fitted to data. All arguments.'
-cli/em-validation.md:
-  title: Cryo-EM map validation options - AUSAXS
-  description: 'ausaxs em: validate cryo-EM maps (MRC/CCP4) against solution SAXS data. Covers the chi-square landscapes, output files and all arguments.'
-cli/fit.md:
-  title: Fitting atomic models to SAXS data - AUSAXS
-  description: 'ausaxs fit: calculate a SAXS profile from a PDB or mmCIF structure and fit SAXS data. Covers hydration shell, excluded volume, outputs and all arguments.'
-cli/gpu-driver.md:
-  title: Managing the GPU driver - AUSAXS
-  description: Check, enable, disable or remove the AUSAXS GPU driver with the ausaxs gpu commands, and override the GPU setting for a single run.
-cli/plotting-scripts.md:
-  title: CLI plotting - AUSAXS
-  description: 'ausaxs plot: turn .plot and ausaxs.fit files from the AUSAXS command-line tools into figures of SAXS fits and chi-square landscapes.'
-cli/rigidbody.md:
-  title: Rigid-body refinement script reference - AUSAXS
-  description: 'ausaxs rigidbody: refine multi-domain proteins and complexes against SAXS data with configuration scripts, symmetry, constraints and custom loops.'
-  hide:
-  - toc
-cli/sans.md:
-  title: Fitting atomic models to SANS data - AUSAXS
-  description: 'ausaxs sans: calculate a SANS profile from a PDB or mmCIF structure and fit SANS data, with control over the D2O fraction and hydrogen exchange.'
-developers/tests.md:
-  title: Running the tests - AUSAXS
-  description: Build and run the AUSAXS unit and feature tests with CMake and the run_test.py script.
+# Front matter for the pages fetched from the AUSAXS and pyAUSAXS repositories (title, description, theme options),
+# keyed by repository and by the path of the page in its docs/ folder. Those pages are kept free of mkdocs metadata
+# there, so it is added back by fetch_docs.py.
+AUSAXS/AUSAXS:
+  cli/debye.md:
+    title: Debye scattering of atomic structures - AUSAXS
+    description: 'ausaxs debye: Debye scattering of crystals, nanoparticles and atomic structures without solvent, as a powder pattern in 2θ or fitted to data. All arguments.'
+  cli/em-validation.md:
+    title: Cryo-EM map validation options - AUSAXS
+    description: 'ausaxs em: validate cryo-EM maps (MRC/CCP4) against solution SAXS data. Covers the chi-square landscapes, output files and all arguments.'
+  cli/fit.md:
+    title: Fitting atomic models to SAXS data - AUSAXS
+    description: 'ausaxs fit: calculate a SAXS profile from a PDB or mmCIF structure and fit SAXS data. Covers hydration shell, excluded volume, outputs and all arguments.'
+  cli/gpu-driver.md:
+    title: Managing the GPU driver - AUSAXS
+    description: Check, enable, disable or remove the AUSAXS GPU driver with the ausaxs gpu commands, and override the GPU setting for a single run.
+  cli/plotting-scripts.md:
+    title: CLI plotting - AUSAXS
+    description: 'ausaxs plot: turn .plot and ausaxs.fit files from the AUSAXS command-line tools into figures of SAXS fits and chi-square landscapes.'
+  cli/rigidbody.md:
+    title: Rigid-body refinement script reference - AUSAXS
+    description: 'ausaxs rigidbody: refine multi-domain proteins and complexes against SAXS data with configuration scripts, symmetry, constraints and custom loops.'
+    hide:
+    - toc
+  cli/sans.md:
+    title: Fitting atomic models to SANS data - AUSAXS
+    description: 'ausaxs sans: calculate a SANS profile from a PDB or mmCIF structure and fit SANS data, with control over the D2O fraction and hydrogen exchange.'
+  developers/tests.md:
+    title: Running the tests - AUSAXS
+    description: Build and run the AUSAXS unit and feature tests with CMake and the run_test.py script.
+
+AUSAXS/pyAUSAXS:
+  index.md:
+    title: pyAUSAXS API reference - AUSAXS
+    description: 'Reference for the pyAUSAXS Python API: every function and class for SAXS profiles, fitting, settings and rigid-body refinement, with links to each page.'
+  molecules.md:
+    title: Molecule API reference - pyAUSAXS
+    description: 'pyAUSAXS Molecule reference: create_molecule, debye, debye_raw, hydrate, set_coordinates, distance histograms, Rg and the Debye gradient.'
+  data.md:
+    title: Data and structure files - pyAUSAXS
+    description: 'pyAUSAXS reference for reading SAXS data with read_data and create_datafile, and the records of PDB and mmCIF files with read_pdb.'
+  fitting.md:
+    title: Fitting API reference - pyAUSAXS
+    description: 'pyAUSAXS fitting reference: Molecule.fit, the fitted parameters a, b, cw, cx and cr, FitResult, and manual_fit for custom objectives.'
+  settings.md:
+    title: Settings reference - pyAUSAXS
+    description: 'pyAUSAXS settings reference: excluded volume models, fitted parameters, q range, bin width, hydrogens, threads, and any setting by name.'
+  rigidbody.md:
+    title: Rigid-body refinement API - pyAUSAXS
+    description: 'Run AUSAXS rigid-body refinement scripts from Python with pyAUSAXS: prepare, validate, run and stop a refinement, and follow it live.'
+  utilities.md:
+    title: Utilities reference - pyAUSAXS
+    description: 'pyAUSAXS utilities: homogeneous shapes, form factors, the exact Debye sum, output messages, object lifetime, and the ausaxs command.'

@@ -1,5 +1,7 @@
 site/
 __pycache__/
 
-# fetched from the latest AUSAXS release by scripts/fetch_docs.py
+# fetched from the latest AUSAXS and pyAUSAXS releases by scripts/fetch_docs.py
 /src/documentation/*/
+/src/pyausaxs/reference/
+node_modules/
