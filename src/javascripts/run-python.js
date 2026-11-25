@@ -12,7 +12,9 @@
 // helpers, and is shown collapsed (in a ??? admonition). tests/examples/run_examples.mjs runs every block the same way under Node.js.
 
 (() => {
+    // the worker is fetched with the version of this script (see hooks/asset_version.py), so a deploy is not mixed with old files
     const workerUrl = new URL("run-python-worker.js", document.currentScript.src);
+    workerUrl.search = new URL(document.currentScript.src).search;
     let worker = null;
     let nextId = 0;
     let pages = 0; // each page gets its own namespace, also after instant navigation

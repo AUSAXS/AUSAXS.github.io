@@ -141,6 +141,7 @@ extra_javascript:
 hooks:
   - hooks/nowrap_code.py
   - hooks/edit_url.py
+  - hooks/asset_version.py
 
 extra_css:
   - https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css

@@ -1156,15 +1156,23 @@
 }
 
 .md-typeset .ausaxs-run__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
   font-weight: 600;
   color: var(--md-primary-bg-color);
   background-color: var(--ausaxs-gold);
 }
 
+/* A drawn triangle rather than the ▶ glyph, which sits on the baseline and so below the centre of the button */
 .md-typeset .ausaxs-run__button::before {
-  content: "▶";
-  font-size: 0.75em;
-  margin-right: 0.4em;
+  --ausaxs-play-icon: url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 12"><path d="M0 0L10 6L0 12z"/></svg>');
+  content: "";
+  width: 0.55em;
+  height: 0.66em;
+  background-color: currentcolor;
+  -webkit-mask: var(--ausaxs-play-icon) center / contain no-repeat;
+  mask: var(--ausaxs-play-icon) center / contain no-repeat;
 }
 
 .md-typeset .ausaxs-run__button:hover:not(:disabled) {
