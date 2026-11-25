@@ -17,7 +17,7 @@ import warnings
 
 from pyodide.code import eval_code_async
 
-os.environ["MPLBACKEND"] = "Agg"  # figures are rendered to PNG and shown below the block, so plt.show() is a no-op
+os.environ["MPLBACKEND"] = "Agg"  # figures are rendered to PNG, and animations to GIF, and shown below the block, so plt.show() is a no-op
 warnings.filterwarnings("ignore", "FigureCanvasAgg is non-interactive")
 # FitResult.plot() in pyAUSAXS 1.3.8 calls tight_layout on a grid with its own spacing, which warns although the figure
 # is fine (BL-354 in AUSAXS-agent-notes). Remove this once a release without the warning is out.
@@ -50,16 +50,58 @@ def _reset_backend():
         sys.modules["matplotlib.pyplot"].close("all")
 
 
-def _figures():
-    """The open matplotlib figures as base64 PNGs, which are then closed."""
+def _animations(values):
+    """The matplotlib animations among values, by the id of their figure."""
+    animation = sys.modules.get("matplotlib.animation")
+    if animation is None:
+        return {}
+    return {id(value._fig): value for value in values if isinstance(value, animation.Animation)}
+
+
+def _gif(anim):
+    """An animation as an animated GIF, which rests on its last frame for a moment before it starts over."""
+    from matplotlib.animation import AbstractMovieWriter
+    from PIL import Image
+
+    class Writer(AbstractMovieWriter):
+        def setup(self, fig, outfile, dpi=None):
+            super().setup(fig, outfile, dpi)
+            self.frames = []
+
+        def grab_frame(self, **savefig_kwargs):
+            buffer = io.BytesIO()
+            self.fig.savefig(buffer, **{**savefig_kwargs, "format": "rgba", "dpi": self.dpi})
+            self.frames.append(Image.frombuffer("RGBA", self.frame_size, buffer.getbuffer(), "raw", "RGBA", 0, 1))
+
+        def finish(self):
+            durations = [round(1000/self.fps)]*(len(self.frames) - 1) + [1500]
+            self.frames[0].save(self.outfile, save_all=True, append_images=self.frames[1:], duration=durations, loop=0)
+
+    interval = getattr(anim.event_source, "interval", 100)
+    path = "/tmp/animation.gif"
+    anim.save(path, writer=Writer(fps=1000/interval), dpi=96)
+    with open(path, "rb") as file:
+        data = file.read()
+    os.remove(path)
+    return data
+
+
+def _figures(values):
+    """The open matplotlib figures as data: URLs, which are then closed: an animation among values, such as the final
+    expression or a variable, as an animated GIF, and other figures as PNGs."""
     plt = sys.modules.get("matplotlib.pyplot")
     if plt is None:
         return []
+    animations = _animations(values)
     images = []
     for number in plt.get_fignums():
+        figure = plt.figure(number)
+        if id(figure) in animations:
+            images.append("data:image/gif;base64," + base64.b64encode(_gif(animations[id(figure)])).decode())
+            continue
         buffer = io.BytesIO()
-        plt.figure(number).savefig(buffer, format="png", dpi=96, bbox_inches="tight")
-        images.append(base64.b64encode(buffer.getvalue()).decode())
+        figure.savefig(buffer, format="png", dpi=96, bbox_inches="tight")
+        images.append("data:image/png;base64," + base64.b64encode(buffer.getvalue()).decode())
     plt.close("all")
     return images
 
@@ -85,7 +127,7 @@ async def run(code, page, chain, fresh, setup):
     unless it is a plot."""
     namespace = _namespace(page, chain, fresh)
     _reset_backend()
-    error = None
+    error = result = None
     try:
         if fresh and setup:
             await eval_code_async(setup, namespace, filename=SETUP)
@@ -96,4 +138,8 @@ async def run(code, page, chain, fresh, setup):
         error = _format_error(e)
     sys.stdout.flush()
     sys.stderr.flush()
-    return {"error": error, "figures": _figures()}
+    try:
+        figures = _figures([result, *namespace.values()])
+    except BaseException as e:
+        error, figures = error or _format_error(e), []
+    return {"error": error, "figures": figures}

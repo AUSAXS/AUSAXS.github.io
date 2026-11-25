@@ -14,7 +14,7 @@ pyAUSAXS calculates the scattering of any homogeneous body you can describe with
     ```python {.run .setup}
     import matplotlib.pyplot as plt
 
-    def plot(x=None, curves=None, data=None, reference=None, logy=True, xlabel="q [Å⁻¹]", ylabel="I(q)", **style):
+    def plot(x=None, curves=None, data=None, reference=None, logx=False, logy=True, xlabel="q [Å⁻¹]", ylabel="I(q)", **style):
         """Plot a curve, or a dict {label: curve} of curves, against x.
         data:      measured data (q, I, Ierr), drawn as points with error bars
         reference: a (label, curve) pair, drawn as a black dashed line, e.g. an exact result
@@ -28,6 +28,8 @@ pyAUSAXS calculates the scattering of any homogeneous body you can describe with
             plt.plot(x, curves, **style)
         if reference is not None:
             plt.plot(x, reference[1], "k--", label=reference[0])
+        if logx:
+            plt.xscale("log")
         if logy:
             plt.yscale("log")
         plt.xlabel(xlabel)
@@ -58,7 +60,12 @@ plot(q, {"lattice": I}, reference=("exact", I_exact), ylabel="I(q) [Å⁶]")
 
 ## Other shapes
 Any condition that NumPy can evaluate describes a shape. The box is searched from `-extent` to `extent` along each axis; give one extent per axis for elongated shapes:
-```python {.run .continue}
+```python {.run}
+import numpy as np
+import pyausaxs as ausaxs
+
+q = np.linspace(0.01, 0.5, 500)
+
 # a cylinder of radius 20 Å and length 100 Å along z
 cylinder = ausaxs.shape.lattice(lambda x, y, z: (x**2 + y**2 <= 20**2) & (np.abs(z) <= 50), extent=(20, 20, 50))
 
@@ -76,18 +83,33 @@ plot(q, profiles, ylabel="I(q)/I(0)")
 ```
 
 ## Choosing the lattice spacing
-A smaller spacing follows the surface of the body more closely, and gives a better profile at high q, at the cost of more cells. The distances between the cells are counted with a fast Fourier transform, so even millions of cells are fast: a sphere of radius 30 Å at a spacing of 0.25 Å has about 7 million cells, and takes a few seconds. As a rule, keep the spacing well below the smallest feature of the shape, and check that halving it does not change the profile in the q range you need:
-```python {.run .continue}
+A smaller spacing follows the surface of the body more closely, and gives a better profile at high q, at the cost of more cells. As a rule, keep the spacing well below the smallest feature of the shape, and check that halving it does not change the profile in the q range you need:
+```python {.run}
+import numpy as np
+import pyausaxs as ausaxs
+
+R = 30
+q = np.linspace(0.01, 0.5, 500)
+x = q*R
+I_exact = (4*np.pi*R**3*(np.sin(x) - x*np.cos(x))/x**3)**2
+
 profiles = {}
 for spacing in (4, 2, 1):
     body = ausaxs.shape.lattice(lambda x, y, z: x**2 + y**2 + z**2 <= R**2, extent=R, spacing=spacing)
     _, profiles[f"spacing {spacing} Å"] = body.debye(q)
 plot(q, profiles, reference=("exact", I_exact), ylabel="I(q) [Å⁶]")
 ```
-Beyond q ≈ 0.5 Å⁻¹, the width of the distance histogram limits the accuracy as well: for a sphere of radius 30 Å at q = 1.2 Å⁻¹, a spacing of 0.5 Å is 30% below the exact profile with the default bin width of 0.25 Å, and 5% with `ausaxs.settings.histogram(bin_width=0.05)`.
+??? info "Large lattices and high q"
+
+    The distances between the cells are counted with a fast Fourier transform, so even millions of cells are fast: a sphere of radius 30 Å at a spacing of 0.25 Å has about 7 million cells, and takes a few seconds.
+
+    Beyond q ≈ 0.5 Å⁻¹, the width of the distance histogram limits the accuracy as well: for a sphere of radius 30 Å at q = 1.2 Å⁻¹, a spacing of 0.5 Å is 30% below the exact profile with the default bin width of 0.25 Å, and 5% with `ausaxs.settings.histogram(bin_width=0.05)`.
 
 For your own lattices, e.g. cells read from a voxel map, create the body directly from the cell centres, which must lie on one lattice with the given spacing:
-```python {.run .continue}
+```python {.run}
+import numpy as np
+import pyausaxs as ausaxs
+
 cells = np.array([[0, 0, 0], [1, 0, 0], [0, 1, 0]], dtype=float)
 body = ausaxs.shape.Lattice(cells, spacing=1)
 q, I = body.debye()

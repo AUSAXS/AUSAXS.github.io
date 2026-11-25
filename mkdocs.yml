@@ -98,6 +98,7 @@ nav:
       - Developers:
           - Running the tests: documentation/developers/tests.md
       - Citing AUSAXS: documentation/citing.md
+  - About: about.md
 
 markdown_extensions:
   - admonition

@@ -86,10 +86,20 @@
             this.output.setAttribute("aria-live", "polite");
             div.after(bar, this.output);
 
+            // a block that continues from the blocks above it is marked by an icon beside the copy button. Material adds
+            // that button's nav to the pre when it mounts the block, which may be before or after this runs.
             if (!this.standalone) {
-                const tag = Object.assign(document.createElement("div"), { className: "ausaxs-run__continues", textContent: "Continues from above" });
-                tag.title = "This example uses what the examples above it define. Running it also runs those that have not run yet.";
-                div.before(tag);
+                const icon = Object.assign(document.createElement("span"), { className: "md-code__button ausaxs-run__continues" });
+                icon.title = "Continues from above: this example uses what the examples above it define. Running it also runs those that have not run yet.";
+                icon.setAttribute("role", "img");
+                icon.setAttribute("aria-label", "Continues from above");
+                const pre = div.querySelector("pre");
+                const place = () => {
+                    const nav = pre.querySelector(":scope > .md-code__nav");
+                    if (nav) nav.prepend(icon);
+                    return !!nav;
+                };
+                if (!place()) new MutationObserver((_, observer) => { if (place()) observer.disconnect(); }).observe(pre, { childList: true });
             }
         }
 
@@ -142,8 +152,9 @@
                         const error = Object.assign(document.createElement("pre"), { className: "ausaxs-run__error", textContent: message.error });
                         this.output.append(error);
                     }
-                    for (const png of message.figures) {
-                        const img = Object.assign(document.createElement("img"), { src: `data:image/png;base64,${png}`, alt: "Figure produced by the example" });
+                    for (const src of message.figures) {
+                        const alt = src.startsWith("data:image/gif") ? "Animation produced by the example" : "Figure produced by the example";
+                        const img = Object.assign(document.createElement("img"), { src, alt });
                         this.output.append(img);
                     }
                     this.output.hidden = !this.output.childElementCount;

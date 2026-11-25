@@ -8,7 +8,8 @@
 // Messages in:  {id, code, page, chain, fresh, setup}, run one block in the namespace of a chain of blocks of page, a
 //               new one if fresh, which first runs the code setup (see run_python.py).
 // Messages out: {id, type: "status", text}, {id, type: "stdout" | "stderr", text} for each line printed,
-//               {id, type: "done", error, figures}, with error null or a traceback, and figures base64 PNGs.
+//               {id, type: "done", error, figures}, with error null or a traceback, and figures data: URLs, of PNG images or
+//               of animated GIFs.
 
 import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v314.0.8/full/pyodide.mjs";
 

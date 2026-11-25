@@ -1,6 +1,6 @@
 ---
 title: Differentiable Debye scattering in Python - AUSAXS
-description: "Gradients of the Debye equation with respect to atomic coordinates in pyAUSAXS, for SAXS-driven refinement with SciPy and machine learning with PyTorch."
+description: "Gradients of the Debye equation with respect to atomic coordinates in pyAUSAXS, for SAXS-driven refinement and machine learning with PyTorch."
 ---
 
 # Gradients of the Debye equation
@@ -15,78 +15,112 @@ in one call, without forming the full Jacobian.
 g = mol.debye_raw_vjp(q, v)    # (n_atoms, 3) array, in the order of mol.atoms()
 ```
 
-The gradient is that of the [plain Debye sum](scattering-profiles.md#the-plain-debye-sum), `mol.debye_raw()`: every atom is a point scatterer with its weight, without form factors, hydration shell or excluded volume. It is the derivative of the exact sum over all pairs of atoms, not of the histogram approximation that `debye_raw()` uses to calculate the profile itself. The two profiles agree closely, but for a consistent pair, calculate the profile with `ausaxs.unoptimized.debye_exact(mol, q)`, which is slower. Use a molecule without a hydration shell.
+The gradient is that of the [plain Debye sum](scattering-profiles.md#the-plain-debye-sum), `mol.debye_raw()`: every atom is a point scatterer with its weight, without form factors, hydration shell or excluded volume, so use a molecule without a hydration shell.
+
+??? info "Exact sum or histogram?"
+
+    The gradient is the derivative of the exact sum over all pairs of atoms, while `debye_raw()` calculates the profile from a histogram of the distances. For this example, the difference between the two amounts to an error of about 0.01 Å in every atomic coordinate, far less than the uncertainty in the atom positions of any real structure, so use `debye_raw()` and its gradient together as they are.
 
 ??? example "Plotting helper"
 
-    The examples on this page draw their plots with this function, so that they show only the pyAUSAXS calls. It runs by itself before them.
+    The figures on this page are drawn with this function, so that the examples show only the pyAUSAXS calls. It runs by itself before them.
 
     ```python {.run .setup}
     import matplotlib.pyplot as plt
+    import numpy as np
+    from matplotlib.animation import FuncAnimation
 
-    def plot(x=None, curves=None, data=None, reference=None, logy=True, xlabel="q [Å⁻¹]", ylabel="I(q)", **style):
-        """Plot a curve, or a dict {label: curve} of curves, against x.
-        data:      measured data (q, I, Ierr), drawn as points with error bars
-        reference: a (label, curve) pair, drawn as a black dashed line, e.g. an exact result
+    def show(path, x, curves, target, reference, titles=None, label="current", xlabel="q [Å⁻¹]", ylabel="I(q)"):
+        """Show points in 3D, and beside them their curve against x. Frame i shows the points path[i], an (n, 3)
+        array, and the curve curves[i]; the target points, an (n, 3) array, and their curve, reference, are drawn
+        in black in every frame. With one frame, this is a still figure; with more, an animation.
         """
-        if data is not None:
-            plt.errorbar(*data, fmt=".", color="gray", label="data")
-        if isinstance(curves, dict):
-            for label, y in curves.items():
-                plt.plot(x, y, label=label, **style)
-        elif curves is not None:
-            plt.plot(x, curves, **style)
-        if reference is not None:
-            plt.plot(x, reference[1], "k--", label=reference[0])
-        if logy:
-            plt.yscale("log")
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-        if plt.gca().get_legend_handles_labels()[1]:
-            plt.legend()
+        fig = plt.figure(figsize=(8, 3.6))
+        left = fig.add_axes((0, 0, 0.5, 1), projection="3d")
+        right = fig.add_axes((0.6, 0.16, 0.37, 0.72))
+        lim = np.abs(np.concatenate([*path, target])).max()
+        left.plot(*target.T, "o", color="black", alpha=0.25, markersize=3)
+        points, = left.plot(*path[0].T, "o", markersize=3)
+        left.set(xlim=(-lim, lim), ylim=(-lim, lim), zlim=(-lim, lim), xticklabels=[], yticklabels=[], zticklabels=[])
+        right.plot(x, reference, "k--", label="target")
+        curve, = right.plot(x, curves[0], label=label)
+        right.set(yscale="log", xlabel=xlabel, ylabel=ylabel)
+        right.legend(loc="upper right")
+
+        def update(i):
+            points.set_data_3d(*path[i].T)
+            left.view_init(elev=20, azim=-60 + i)  # turn slowly, which shows the depth
+            curve.set_ydata(curves[i])
+            if titles:
+                right.set_title(titles[i])
+
+        update(0)
+        if len(path) == 1:
+            plt.show()
+            return None
+        animation = FuncAnimation(fig, update, frames=len(path), interval=80)
         plt.show()
+        return animation
     ```
 
-## Refining coordinates with SciPy
-This example moves 60 point scatterers until their profile matches a target, with the gradient passed to SciPy's L-BFGS optimizer:
+## Following the gradient
+This example moves 60 point scatterers until their profile matches that of a target arrangement. The target is a random cloud of points, drawn in black, and the start is a compact blob:
 ```python {.run}
 import numpy as np
 import pyausaxs as ausaxs
-from scipy.optimize import minimize
 
 rng = np.random.default_rng(1)
 q = np.linspace(0.01, 0.5, 50)
 weights = np.ones(60)
 
-# the target: the profile of a random arrangement of 60 points
 target = rng.normal(scale=10, size=(60, 3))
-_, I_target = ausaxs.unoptimized.debye_exact(ausaxs.create_molecule(*target.T, weights), q)
+_, I_target = ausaxs.create_molecule(*target.T, weights).debye_raw(q)
 
-# start from a distorted copy, and move it back
-start = target + rng.normal(scale=3, size=target.shape)
+start = rng.normal(scale=4, size=(60, 3))
 mol = ausaxs.create_molecule(*start.T, weights)
+_, I_start = mol.debye_raw(q)
 
+show([start], q, [I_start], target, I_target, label="start")
+```
+The loss compares the two profiles, and the gradient says how to move the points to lower it:
+```python {.run .continue}
 def loss_and_gradient(x):
     mol.set_coordinates(x.reshape(-1, 3))
-    _, I = ausaxs.unoptimized.debye_exact(mol, q)
+    _, I = mol.debye_raw(q)
     r = (I - I_target)/I_target
     v = 2*r/I_target                     # dL/dI for L = sum(r²)
     return np.sum(r**2), mol.debye_raw_vjp(q, v).ravel()
 
-result = minimize(loss_and_gradient, start.ravel(), jac=True, method="L-BFGS-B")
-print(f"loss: {loss_and_gradient(start.ravel())[0]:.3g} -> {result.fun:.3g}")
+print(f"loss at the start: {loss_and_gradient(start.ravel())[0]:.3g}")
 ```
-The refined profile matches the target, which the start did not:
+Then take small steps downhill along the gradient, and record where the points are and what their profile looks like:
 ```python {.run .continue}
-_, I_start = ausaxs.unoptimized.debye_exact(ausaxs.create_molecule(*start.T, weights), q)
-mol.set_coordinates(result.x.reshape(-1, 3))
-_, I_refined = ausaxs.unoptimized.debye_exact(mol, q)
-plot(q, {"start": I_start, "refined": I_refined}, reference=("target", I_target))
+x = start.ravel().copy()
+path, profiles, titles = [], [], []
+for step in range(180):
+    loss, g = loss_and_gradient(x)
+    if step % 6 == 0:                    # one frame every 6 steps
+        path.append(x.reshape(-1, 3).copy())
+        profiles.append(mol.debye_raw(q)[1])
+        titles.append(f"step {step}, loss {loss:.2g}")
+    move = 3*g.reshape(-1, 3)
+    # no point moves more than 0.2 Å per step, as the gradient is large at the start
+    x -= (move*np.minimum(1, 0.2/np.linalg.norm(move, axis=1, keepdims=True))).ravel()
+
+show(path, q, profiles, target, I_target, titles=titles)
 ```
-A profile determines a structure only up to rotations, translations and mirror images, so the refined points match the target's profile, not necessarily its coordinates.
+The points end up with the target's profile, but not in the arrangement of the black points: points that can each move anywhere have far more freedom than a profile can pin down. In practice, the SAXS loss is therefore added as an extra term to a model that already knows what a structure looks like, such as a pretrained structure prediction model like OpenFold; [the PyTorch section](#using-it-in-pytorch) shows how to connect them. The problem is then still underdetermined, but the model moves the atoms in ways that keep the structure reasonable, instead of moving each point on its own.
+
+??? info "How much does a profile determine?"
+
+    Part of the degeneracy cannot be avoided: a profile determines a structure only up to rotations, translations and mirror images. Most of it comes from the freedom of the points. In this example, 50 measured intensity points must pin down 180 coordinates, so many arrangements match the profile equally well.
+
+    Measuring more points does not solve this, as nearby intensity points are strongly correlated. A rough indicator of how much information a profile holds is the number of Shannon channels, $q_\text{max} D_\text{max}/\pi$, which does not grow with finer sampling. For the target here, with $q_\text{max} = 0.5$ Å⁻¹ and $D_\text{max} \approx 56$ Å, it is about 9. It is only a rough indicator, not an exact count of the parameters a profile can determine; noise in the data, for one, lowers it further.
+
+This is not a physical trajectory: the points have no mass or temperature, and nothing but the profile moves them. Gradient descent with small steps just makes the path easy to follow. To refine a structure, pass `loss_and_gradient` to an optimizer such as SciPy's L-BFGS instead, `scipy.optimize.minimize(loss_and_gradient, start.ravel(), jac=True, method="L-BFGS-B")`, which needs far fewer steps.
 
 ## Using it in PyTorch
-To use the profile in a PyTorch model, wrap it in an `autograd.Function`, with the vector-Jacobian product as its backward pass:
+To use the profile in a PyTorch model, for example as an extra loss term when fine-tuning a structure prediction model, wrap it in an `autograd.Function`, with the vector-Jacobian product as its backward pass:
 ```python
 import torch
 
@@ -95,7 +129,7 @@ class DebyeProfile(torch.autograd.Function):
     def forward(ctx, coords, mol, q):
         mol.set_coordinates(coords.detach().numpy())
         ctx.mol, ctx.q = mol, q
-        _, I = ausaxs.unoptimized.debye_exact(mol, q)
+        _, I = mol.debye_raw(q)
         return torch.from_numpy(I)
 
     @staticmethod

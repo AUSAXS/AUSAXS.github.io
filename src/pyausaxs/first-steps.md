@@ -18,7 +18,7 @@ If it fails, see the [troubleshooting](../getting-started/troubleshooting.md) pa
 
 The examples in this guide use the structure of hen egg-white lysozyme, [2epe.pdb](https://raw.githubusercontent.com/AUSAXS/AUSAXS/master/tests/files/2epe.pdb), and a SAXS measurement of it, [2epe.dat](https://raw.githubusercontent.com/AUSAXS/AUSAXS/master/tests/files/2epe.dat). Download both into the folder you run Python from.
 
-To try the examples without installing anything, press the **Run** button below them: they run in your browser, with both files already in place. An example marked **Continues from above** builds on the examples before it, like a cell of a notebook, and running it also runs those that have not run yet. The other examples stand on their own.
+To try the examples without installing anything, press the **Run** button below them: they run in your browser, with both files already in place. An example marked with ↳ next to its copy button builds on the examples before it, like a cell of a notebook, and running it also runs those that have not run yet. The other examples stand on their own.
 
 ??? example "Plotting helper"
 
@@ -27,7 +27,7 @@ To try the examples without installing anything, press the **Run** button below 
     ```python {.run .setup}
     import matplotlib.pyplot as plt
 
-    def plot(x=None, curves=None, data=None, reference=None, logy=True, xlabel="q [Å⁻¹]", ylabel="I(q)", **style):
+    def plot(x=None, curves=None, data=None, reference=None, logx=False, logy=True, xlabel="q [Å⁻¹]", ylabel="I(q)", **style):
         """Plot a curve, or a dict {label: curve} of curves, against x.
         data:      measured data (q, I, Ierr), drawn as points with error bars
         reference: a (label, curve) pair, drawn as a black dashed line, e.g. an exact result
@@ -41,6 +41,8 @@ To try the examples without installing anything, press the **Run** button below 
             plt.plot(x, curves, **style)
         if reference is not None:
             plt.plot(x, reference[1], "k--", label=reference[0])
+        if logx:
+            plt.xscale("log")
         if logy:
             plt.yscale("log")
         plt.xlabel(xlabel)
@@ -51,13 +53,12 @@ To try the examples without installing anything, press the **Run** button below 
     ```
 
 ## The building blocks
-Everything is imported from one module, by convention as `ausaxs`:
-```python {.run}
-import pyausaxs as ausaxs
-```
+Everything is imported from one module, by convention as `ausaxs`.
 
 **Molecules.** `ausaxs.create_molecule` reads a structure from a PDB, mmCIF or XYZ file. The molecule holds the atoms with their form factors and its hydration shell, and calculates everything else: the scattering profile, the distance histogram, the radius of gyration, and fits.
-```python {.run .continue}
+```python {.run}
+import pyausaxs as ausaxs
+
 mol = ausaxs.create_molecule("2epe.pdb")
 mol.hydrate()              # place a hydration shell around it
 q, I = mol.debye()         # its SAXS profile
@@ -99,22 +100,31 @@ print(f"reduced chi-square: {fit.chi2r():.2f}, fitted: {', '.join(fit.fit_parame
 
 ## Output messages
 AUSAXS prints what it is doing, such as the number of atoms it read, and warns about anything unusual in the input. To keep it quiet:
-```python {.run .continue}
+```python {.run}
+import pyausaxs as ausaxs
+
 ausaxs.settings.general(verbose=False)                  # no progress messages
 ausaxs.settings.general(verbose=False, warnings=False)  # nothing at all
 ```
-To show the messages somewhere else, for instance in a log or a GUI, pass a function that receives each message:
-```python {.run .continue}
-messages = []
-ausaxs.set_output_callback(messages.append)
-mol = ausaxs.create_molecule("2epe.pdb")
-ausaxs.reset_output_callback()
-print(f"captured {len(messages)} messages, the first: {messages[0]!r}")
-```
-The messages are passed on as AUSAXS writes them, including the terminal colour codes and the line break.
+
+??? info "Sending the messages elsewhere"
+
+    To show the messages somewhere else, for instance in a log or a GUI, pass a function that receives each message. The messages are passed on as AUSAXS writes them, including the terminal colour codes and the line break.
+
+    ```python {.run}
+    import pyausaxs as ausaxs
+
+    messages = []
+    ausaxs.set_output_callback(messages.append)
+    mol = ausaxs.create_molecule("2epe.pdb")
+    ausaxs.reset_output_callback()
+    print(f"captured {len(messages)} messages, the first: {messages[0]!r}")
+    ```
 
 Errors are raised as Python exceptions with the message from AUSAXS, e.g. for a file that does not exist:
-```python {.run .continue}
+```python {.run}
+import pyausaxs as ausaxs
+
 try:
     ausaxs.create_molecule("missing.pdb")
 except RuntimeError as e:
@@ -123,7 +133,9 @@ except RuntimeError as e:
 
 ## Saving settings
 `ausaxs.settings.save("settings.txt")` writes every setting to a text file, and `ausaxs.settings.load("settings.txt")` reads it back. The file has the same format as the settings files of the [command-line tools](../documentation/cli/fit.md), so you can share a configuration between Python and the command line.
-```python {.run .continue}
+```python {.run}
+import pyausaxs as ausaxs
+
 ausaxs.settings.exv(ausaxs.ExvModel.fraser)
 ausaxs.settings.save("settings.txt")
 print(open("settings.txt").read())

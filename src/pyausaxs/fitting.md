@@ -12,7 +12,7 @@ description: "Fit atomic structures to SAXS data in Python with pyAUSAXS: fitted
     ```python {.run .setup}
     import matplotlib.pyplot as plt
 
-    def plot(x=None, curves=None, data=None, reference=None, logy=True, xlabel="q [Å⁻¹]", ylabel="I(q)", **style):
+    def plot(x=None, curves=None, data=None, reference=None, logx=False, logy=True, xlabel="q [Å⁻¹]", ylabel="I(q)", **style):
         """Plot a curve, or a dict {label: curve} of curves, against x.
         data:      measured data (q, I, Ierr), drawn as points with error bars
         reference: a (label, curve) pair, drawn as a black dashed line, e.g. an exact result
@@ -26,6 +26,8 @@ description: "Fit atomic structures to SAXS data in Python with pyAUSAXS: fitted
             plt.plot(x, curves, **style)
         if reference is not None:
             plt.plot(x, reference[1], "k--", label=reference[0])
+        if logx:
+            plt.xscale("log")
         if logy:
             plt.yscale("log")
         plt.xlabel(xlabel)
@@ -82,7 +84,11 @@ The model compared with the data is `a·I(q) + b`, where `I(q)` is the profile f
 
 ## What is fitted
 `ausaxs.settings.fit` chooses which parameters are fitted, besides `a` and `b`:
-```python {.run .continue}
+```python {.run}
+import pyausaxs as ausaxs
+
+mol = ausaxs.create_molecule("2epe.pdb")
+mol.hydrate()
 ausaxs.settings.exv(ausaxs.ExvModel.fraser)
 ausaxs.settings.fit(
     fit_hydration=True,          # cw: almost always wanted
@@ -97,7 +103,11 @@ The default `simple` excluded volume model has no excluded volume parameter, so 
 
 ## Comparing models
 Since a fit takes milliseconds, it is easy to compare several models on the same data:
-```python {.run .continue}
+```python {.run}
+import pyausaxs as ausaxs
+
+mol = ausaxs.create_molecule("2epe.pdb")
+mol.hydrate()
 data = ausaxs.read_data("2epe.dat")
 fits = {}
 for model in (ausaxs.ExvModel.simple, ausaxs.ExvModel.fraser, ausaxs.ExvModel.grid):
@@ -111,11 +121,14 @@ plot(q, fits, data=(q, I, Ierr))
 
 ## Custom fits and objectives
 `mol.fit` minimises the chi-square over the enabled parameters. To use your own objective, add your own parameters, or fit several datasets at once, use `ausaxs.manual_fit` instead. It evaluates the model profile for parameter values you choose, and leaves the fitting to you:
-```python {.run .continue}
+```python {.run}
 import numpy as np
+import pyausaxs as ausaxs
 from scipy.optimize import minimize_scalar
 
-ausaxs.settings.reset()
+mol = ausaxs.create_molecule("2epe.pdb")
+mol.hydrate()
+ausaxs.settings.reset()                  # the default settings: only cw is fitted
 data = ausaxs.read_data("2epe.dat")
 q, I, Ierr = data.data()
 model = ausaxs.manual_fit(mol, data)     # evaluates at the q values of the data
@@ -133,7 +146,11 @@ print(f"own fit:   cw = {best.x:.4f}, chi-square = {best.fun:.1f}")
 fit = mol.fit(data)                      # the same fit, done by AUSAXS
 print(f"mol.fit(): cw = {fit.fit_parameters()['cw'][0]:.4f}, chi-square = {fit.chi2():.1f}")
 ```
-`evaluate` takes one value per enabled parameter, in the order `cw`, `cx`, `cr`: with the default settings, only `cw`. It returns the profile before the scale `a` and background `b` are applied. `ausaxs.manual_fit(mol, q)` evaluates at the q values you give instead of those of a dataset, and `evaluate(params, q)` at other q values for a single call.
+`evaluate` takes one value per enabled parameter, in the order `cw`, `cx`, `cr`, and returns the profile before the scale `a` and background `b` are applied.
+
+??? info "Other q values"
+
+    `ausaxs.manual_fit(mol, q)` evaluates at the q values you give instead of those of a dataset, and `evaluate(params, q)` at other q values for a single call.
 
 ## Next steps
 - Fit every frame of an [MD trajectory](trajectories.md).

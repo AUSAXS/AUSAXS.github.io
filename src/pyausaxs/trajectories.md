@@ -14,7 +14,7 @@ A molecular dynamics simulation gives thousands of conformations of a molecule, 
     ```python {.run .setup}
     import matplotlib.pyplot as plt
 
-    def plot(x=None, curves=None, data=None, reference=None, logy=True, xlabel="q [Å⁻¹]", ylabel="I(q)", **style):
+    def plot(x=None, curves=None, data=None, reference=None, logx=False, logy=True, xlabel="q [Å⁻¹]", ylabel="I(q)", **style):
         """Plot a curve, or a dict {label: curve} of curves, against x.
         data:      measured data (q, I, Ierr), drawn as points with error bars
         reference: a (label, curve) pair, drawn as a black dashed line, e.g. an exact result
@@ -28,6 +28,8 @@ A molecular dynamics simulation gives thousands of conformations of a molecule, 
             plt.plot(x, curves, **style)
         if reference is not None:
             plt.plot(x, reference[1], "k--", label=reference[0])
+        if logx:
+            plt.xscale("log")
         if logy:
             plt.yscale("log")
         plt.xlabel(xlabel)

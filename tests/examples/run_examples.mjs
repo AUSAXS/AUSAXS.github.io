@@ -3,7 +3,8 @@
 //
 // Usage: node run_examples.mjs [--wheel <pyausaxs wheel>] [--figures <folder>] [page.md ...]
 //   --wheel    install this pyAUSAXS wheel instead of the latest one on PyPI, to test a wheel before its release
-//   --figures  save the figures of the blocks in this folder, as <page>-<block>-<figure>.png, to look them over
+//   --figures  save the figures of the blocks in this folder, as <page>-<block>-<figure>.png (.gif for
+//              an animation), to look them over
 //   pages    the pages to run; default every page in src/ with a runnable block
 //
 // The blocks of a page run in order. A standalone block (```python {.run}) starts a new namespace, and the continuing
@@ -74,8 +75,10 @@ for (const page of pages) {
             console.error(`FAILED ${name}:\n${code}\n${result.error}`);
             process.exit(1);
         }
-        if (figureDir) result.figures.forEach((png, j) => writeFileSync(
-            join(figureDir, `${relative(src, page).replace(/[\/.]/g, "-")}-${i + 1}-${j + 1}.png`), Buffer.from(png, "base64")));
+        if (figureDir) result.figures.forEach((url, j) => {
+            const [, type, data] = url.match(/^data:image\/(\w+);base64,(.*)$/s);
+            writeFileSync(join(figureDir, `${relative(src, page).replace(/[\/.]/g, "-")}-${i + 1}-${j + 1}.${type}`), Buffer.from(data, "base64"));
+        });
         const figures = result.figures.length ? `, ${result.figures.length} figure(s)` : "";
         console.log(`passed ${name} (${((performance.now() - start) / 1000).toFixed(2)} s${figures})`);
         count++;
