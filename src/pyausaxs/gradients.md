@@ -17,6 +17,36 @@ g = mol.debye_raw_vjp(q, v)    # (n_atoms, 3) array, in the order of mol.atoms()
 
 The gradient is that of the [plain Debye sum](scattering-profiles.md#the-plain-debye-sum), `mol.debye_raw()`: every atom is a point scatterer with its weight, without form factors, hydration shell or excluded volume. It is the derivative of the exact sum over all pairs of atoms, not of the histogram approximation that `debye_raw()` uses to calculate the profile itself. The two profiles agree closely, but for a consistent pair, calculate the profile with `ausaxs.unoptimized.debye_exact(mol, q)`, which is slower. Use a molecule without a hydration shell.
 
+??? example "Plotting helper"
+
+    The examples on this page draw their plots with this function, so that they show only the pyAUSAXS calls. It runs by itself before them.
+
+    ```python {.run .setup}
+    import matplotlib.pyplot as plt
+
+    def plot(x=None, curves=None, data=None, reference=None, logy=True, xlabel="q [Å⁻¹]", ylabel="I(q)", **style):
+        """Plot a curve, or a dict {label: curve} of curves, against x.
+        data:      measured data (q, I, Ierr), drawn as points with error bars
+        reference: a (label, curve) pair, drawn as a black dashed line, e.g. an exact result
+        """
+        if data is not None:
+            plt.errorbar(*data, fmt=".", color="gray", label="data")
+        if isinstance(curves, dict):
+            for label, y in curves.items():
+                plt.plot(x, y, label=label, **style)
+        elif curves is not None:
+            plt.plot(x, curves, **style)
+        if reference is not None:
+            plt.plot(x, reference[1], "k--", label=reference[0])
+        if logy:
+            plt.yscale("log")
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        if plt.gca().get_legend_handles_labels()[1]:
+            plt.legend()
+        plt.show()
+    ```
+
 ## Refining coordinates with SciPy
 This example moves 60 point scatterers until their profile matches a target, with the gradient passed to SciPy's L-BFGS optimizer:
 ```python {.run}
@@ -45,6 +75,13 @@ def loss_and_gradient(x):
 
 result = minimize(loss_and_gradient, start.ravel(), jac=True, method="L-BFGS-B")
 print(f"loss: {loss_and_gradient(start.ravel())[0]:.3g} -> {result.fun:.3g}")
+```
+The refined profile matches the target, which the start did not:
+```python {.run .continue}
+_, I_start = ausaxs.unoptimized.debye_exact(ausaxs.create_molecule(*start.T, weights), q)
+mol.set_coordinates(result.x.reshape(-1, 3))
+_, I_refined = ausaxs.unoptimized.debye_exact(mol, q)
+plot(q, {"start": I_start, "refined": I_refined}, reference=("target", I_target))
 ```
 A profile determines a structure only up to rotations, translations and mirror images, so the refined points match the target's profile, not necessarily its coordinates.
 

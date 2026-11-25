@@ -1,9 +1,15 @@
 // Run buttons for the Python examples. A code block written as ```python {.run} gets a Run button, which runs it in the
 // browser with Pyodide and pyAUSAXS (see run-python-worker.js); nothing is installed and no server is involved.
 //
-// The runnable blocks of a page share one namespace, like the cells of a notebook, so a block can use what the blocks
-// above it defined: running a block first runs the blocks above it that have not run yet. The code can be edited
-// before it is run. tests/examples/run_examples.mjs runs every block the same way under Node.js.
+// A block stands on its own, and runs in a fresh namespace each time. A block written as ```python {.run .continue}
+// instead continues from the blocks above it, like the cells of a notebook: it shares the namespace of the nearest
+// standalone block above it and of the continuing blocks between them, its chain, and running it first runs the blocks
+// of its chain above it that have not run yet. Such a block is marked as continuing from above. The code can be edited
+// before it is run.
+//
+// A setup block, ```python {.run .setup}, has no Run button: it runs at the start of every fresh namespace of its page,
+// before the block that starts it. It holds code the examples share but that is not their point, such as plotting
+// helpers, and is shown collapsed (in a ??? admonition). tests/examples/run_examples.mjs runs every block the same way under Node.js.
 
 (() => {
     const workerUrl = new URL("run-python-worker.js", document.currentScript.src);
@@ -12,7 +18,7 @@
     let pages = 0; // each page gets its own namespace, also after instant navigation
     const handlers = new Map(); // id of a sent block -> function receiving its messages
 
-    function send(code, page, onMessage) {
+    function send(code, page, chain, fresh, setup, onMessage) {
         if (!worker) {
             worker = new Worker(workerUrl, { type: "module" });
             worker.onmessage = ({ data }) => handlers.get(data.id)?.(data);
@@ -32,7 +38,7 @@
                     resolve(!message.error);
                 }
             });
-            worker.postMessage({ id, code, page });
+            worker.postMessage({ id, code, page, chain, fresh, setup });
         });
     }
 
@@ -50,8 +56,10 @@
     }
 
     class Block {
-        constructor(div, cell) {
+        constructor(div, cell, chain) {
             this.cell = cell;
+            this.chain = chain; // the blocks sharing a namespace, headed by a standalone block
+            chain.blocks.push(this);
             this.code = div.querySelector("code");
             this.original = this.code.innerHTML;
             this.ran = false;
@@ -77,7 +85,15 @@
             this.output = Object.assign(document.createElement("div"), { className: "ausaxs-run__output", hidden: true });
             this.output.setAttribute("aria-live", "polite");
             div.after(bar, this.output);
+
+            if (!this.standalone) {
+                const tag = Object.assign(document.createElement("div"), { className: "ausaxs-run__continues", textContent: "Continues from above" });
+                tag.title = "This example uses what the examples above it define. Running it also runs those that have not run yet.";
+                div.before(tag);
+            }
         }
+
+        get standalone() { return this.chain.blocks[0] === this; }
 
         setStatus(text) { this.status.textContent = text; }
 
@@ -114,7 +130,11 @@
             this.ansi = "";
             this.button.disabled = true;
             this.setStatus("Running…");
-            const ok = await send(this.code.innerText, this.cell.page, (message) => {
+            // a standalone block starts its chain over, in a fresh namespace, so the blocks after it have to run again
+            if (this.standalone) for (const b of this.chain.blocks) b.ran = false;
+            // textContent, since innerText is empty while the setup is collapsed; it is not editable, so they agree
+            const setup = this.standalone ? this.cell.setup.map((code) => code.textContent).join("\n") : "";
+            const ok = await send(this.code.innerText, this.cell.page, this.chain.index, this.standalone, setup, (message) => {
                 if (message.type === "status") this.setStatus(message.text);
                 else if (message.type === "stdout" || message.type === "stderr") this.print(message.text, message.type);
                 else if (message.type === "done") {
@@ -136,27 +156,32 @@
         }
     }
 
-    // The runnable blocks of one page. Runs are queued, so they always happen in the order they were asked for.
+    // The runnable blocks of one page, in chains. Runs are queued, so they always happen in the order they were asked for.
     class Notebook {
         constructor(divs) {
             this.page = ++pages;
-            this.blocks = divs.map((div) => new Block(div, this));
+            this.setup = divs.filter((div) => div.classList.contains("setup")).map((div) => div.querySelector("code"));
+            const chains = [];
+            for (const div of divs.filter((div) => !div.classList.contains("setup"))) {
+                if (!div.classList.contains("continue") || !chains.length) chains.push({ index: chains.length, blocks: [] });
+                new Block(div, this, chains.at(-1));
+            }
             this.queue = Promise.resolve();
         }
 
         run(block) {
-            const upTo = this.blocks.indexOf(block);
-            for (const b of this.blocks.slice(0, upTo + 1)) if (!b.ran || b === block) b.setStatus("Waiting…");
+            // the blocks of its chain above it that have not run yet, and then the block itself
+            const above = (b) => !block.standalone && b.chain.blocks.indexOf(b) < block.chain.blocks.indexOf(block);
+            for (const b of block.chain.blocks) if (b === block || (above(b) && !b.ran)) b.setStatus("Waiting…");
             this.queue = this.queue.then(async () => {
-                for (const b of this.blocks.slice(0, upTo)) {
-                    if (b.ran) continue;
-                    if (!(await b.execute())) {
-                        for (const later of this.blocks.slice(this.blocks.indexOf(b) + 1, upTo + 1)) later.setStatus("");
+                const todo = [...block.chain.blocks.filter((b) => above(b) && !b.ran), block];
+                for (const [i, b] of todo.entries()) {
+                    if (!(await b.execute()) && b !== block) {
+                        for (const later of todo.slice(i + 1)) later.setStatus("");
                         block.setStatus("An example above failed");
                         return;
                     }
                 }
-                await block.execute();
             });
         }
     }

@@ -23,7 +23,7 @@ Here we calculate the scattering of a silver nanoparticle of 201 atoms, about 2 
 
 === "pyAUSAXS"
 
-    ```python
+    ```python {.run}
     import numpy as np
     import pyausaxs as ausaxs
     import matplotlib.pyplot as plt
@@ -32,6 +32,8 @@ Here we calculate the scattering of a silver nanoparticle of 201 atoms, about 2 
     mol = ausaxs.create_molecule("Ag_crystal.cif")
     _, I = mol.debye_raw(q, form_factors=True)
     plt.semilogy(q, I)
+    plt.xlabel("q [Å⁻¹]")
+    plt.ylabel("I(q)")
     plt.show()
     ```
 

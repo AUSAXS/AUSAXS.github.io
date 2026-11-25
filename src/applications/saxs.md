@@ -32,7 +32,7 @@ Here we fit the structure of hen egg-white lysozyme, [2epe.pdb](https://raw.gith
 
 === "pyAUSAXS"
 
-    ```python
+    ```python {.run}
     import pyausaxs as ausaxs
     import matplotlib.pyplot as plt
     mol = ausaxs.create_molecule("2epe.pdb")

@@ -7,6 +7,36 @@ description: "Calculate SAXS profiles from molecular dynamics trajectories and s
 
 A molecular dynamics simulation gives thousands of conformations of a molecule, and the measured SAXS profile is their average. With pyAUSAXS, you read the structure once and update its coordinates for every frame, so each frame only costs the calculation itself.
 
+??? example "Plotting helper"
+
+    The examples on this page draw their plots with this function, so that they show only the pyAUSAXS calls. It runs by itself before them.
+
+    ```python {.run .setup}
+    import matplotlib.pyplot as plt
+
+    def plot(x=None, curves=None, data=None, reference=None, logy=True, xlabel="q [Å⁻¹]", ylabel="I(q)", **style):
+        """Plot a curve, or a dict {label: curve} of curves, against x.
+        data:      measured data (q, I, Ierr), drawn as points with error bars
+        reference: a (label, curve) pair, drawn as a black dashed line, e.g. an exact result
+        """
+        if data is not None:
+            plt.errorbar(*data, fmt=".", color="gray", label="data")
+        if isinstance(curves, dict):
+            for label, y in curves.items():
+                plt.plot(x, y, label=label, **style)
+        elif curves is not None:
+            plt.plot(x, curves, **style)
+        if reference is not None:
+            plt.plot(x, reference[1], "k--", label=reference[0])
+        if logy:
+            plt.yscale("log")
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        if plt.gca().get_legend_handles_labels()[1]:
+            plt.legend()
+        plt.show()
+    ```
+
 ## Frame by frame
 `mol.set_coordinates` replaces the coordinates of the atoms, and keeps their form factors. After moving the atoms, call `hydrate()` again, so the hydration shell follows the new conformation:
 ```python
@@ -30,6 +60,28 @@ for ts in u.trajectory:
 I_mean = np.mean(profiles, axis=0)
 ```
 The average profile can then be [fitted to data](fitting.md) like that of a single structure, e.g. through `ausaxs.create_datafile` and `ausaxs.manual_fit`, or by comparing `I_mean` with the data yourself.
+
+To try the loop without a trajectory, the example below makes one up: in 20 frames, lysozyme swells and shrinks by up to 5% around its centre.
+```python {.run}
+import time
+import numpy as np
+import pyausaxs as ausaxs
+
+mol = ausaxs.create_molecule("2epe.pdb")
+x, y, z, *_ = mol.atoms()
+coords = np.column_stack([x, y, z])
+centre = coords.mean(axis=0)
+
+start = time.perf_counter()
+profiles = []
+for t in np.linspace(0, 2*np.pi, 20):
+    mol.set_coordinates(centre + (coords - centre)*(1 + 0.05*np.sin(t)))
+    mol.hydrate()
+    q, I = mol.debye()
+    profiles.append(I)
+print(f"{1000*(time.perf_counter() - start)/len(profiles):.0f} ms per frame")
+plot(q, {"swollen": profiles[5], "shrunk": profiles[15]}, reference=("average", np.mean(profiles, axis=0)))
+```
 
 The example uses [MDAnalysis](https://www.mdanalysis.org/), but any library that gives the coordinates as an array works. MDAnalysis uses Å, like AUSAXS; [MDTraj](https://www.mdtraj.org/) uses nm, so multiply its coordinates by 10.
 

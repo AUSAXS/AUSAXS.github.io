@@ -9,13 +9,14 @@ pyAUSAXS is the Python interface to <span class="ausaxs-name"><span class="au">A
 
 ```python {.run}
 import pyausaxs as ausaxs
-import matplotlib
+import matplotlib.pyplot as plt
 
 mol = ausaxs.create_molecule("2epe.pdb")
 mol.hydrate()
 q, I = mol.debye()                 # the SAXS profile, as two numpy arrays
 fit = mol.fit("2epe.dat")          # fit it to a measurement
-fit.plot()
+fit.plot()                         # the data, the fitted profile and the residuals
+plt.show()
 ```
 
 It installs with `pip`, and comes with prebuilt libraries for Linux, macOS and Windows:
@@ -74,9 +75,9 @@ python -m pip install pyausaxs
 The [applications](../applications/index.md) pages show pyAUSAXS next to the command line for [SAXS](../applications/saxs.md), [SANS](../applications/sans.md), [rigid-body refinement](../applications/rigid-body-refinement.md), [crystals and nanoparticles](../applications/crystals.md) and [powder diffraction](../applications/powder-diffraction.md). Every function and setting is listed in the [API reference](reference/index.md).
 
 ## Examples
-Examples with a **Run** button run in your browser, with no installation: [Pyodide](https://pyodide.org/) runs Python there, with the same pyAUSAXS package that `pip` installs. You can edit the code before you run it. The first run downloads Python and pyAUSAXS, about 15 MB, and takes a few seconds; after that, the browser keeps them.
+Examples with a **Run** button run in your browser, with no installation: [Pyodide](https://pyodide.org/) runs Python there, with the same pyAUSAXS package that `pip` installs. You can edit the code before you run it. An example marked **Continues from above** builds on the examples before it, like a cell of a notebook, and running it also runs those. The first run downloads Python and pyAUSAXS, about 15 MB, and takes a few seconds; after that, the browser keeps them.
 
 The [pyAUSAXS examples](https://github.com/AUSAXS/pyAUSAXS/tree/master/examples) are complete, runnable scripts, from a basic Debye calculation to model fitting, distance histograms, crystal scattering and homogeneous shapes. The structure and data files they use are in the [test files](https://github.com/AUSAXS/pyAUSAXS/tree/master/tests/files) of the repository.
 
 ## Citing pyAUSAXS
-If you use pyAUSAXS in published work, cite the AUSAXS paper, as described in [Citing AUSAXS](../documentation/citing.md).
+If you use pyAUSAXS in published work, please [cite the relevant AUSAXS paper](../documentation/citing.md).

@@ -25,17 +25,19 @@ Here we calculate the Cu Kα powder pattern of a silver nanoparticle of 201 atom
 
 === "pyAUSAXS"
 
-    ```python
+    ```python {.run}
     import numpy as np
     import pyausaxs as ausaxs
     import matplotlib.pyplot as plt
     ausaxs.settings.histogram(bin_width=0.05)
-    wavelength = 1.5406
-    q = np.linspace(0.01, 4*np.pi/wavelength, 2000)
+    wavelength = 1.5406                            # Cu Kα, in Å
+    two_theta = np.linspace(30, 150, 2000)         # scattering angle 2θ, in degrees
+    q = 4*np.pi/wavelength*np.sin(np.radians(two_theta)/2)
     mol = ausaxs.create_molecule("Ag_crystal.cif")
     _, I = mol.debye_raw(q, form_factors=True)
-    two_theta = np.degrees(2*np.arcsin(q*wavelength/(4*np.pi)))
     plt.plot(two_theta, I)
+    plt.xlabel("2θ [°]")
+    plt.ylabel("I")
     plt.show()
     ```
 

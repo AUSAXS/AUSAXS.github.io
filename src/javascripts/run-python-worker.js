@@ -5,14 +5,15 @@
 // a new ABI (ABI in its .github/workflows/build-pyodide-wheel.yml), move the version here and in
 // tests/examples/package.json with it. Until then, micropip keeps installing the newest wheel built for this ABI.
 //
-// Messages in:  {id, code, page}, run one block in the namespace of page (see run_python.py).
+// Messages in:  {id, code, page, chain, fresh, setup}, run one block in the namespace of a chain of blocks of page, a
+//               new one if fresh, which first runs the code setup (see run_python.py).
 // Messages out: {id, type: "status", text}, {id, type: "stdout" | "stderr", text} for each line printed,
 //               {id, type: "done", error, figures}, with error null or a traceback, and figures base64 PNGs.
 
 import { loadPyodide } from "https://cdn.jsdelivr.net/pyodide/v314.0.8/full/pyodide.mjs";
 
 // the structure and data files the examples read, written to the working directory
-const FILES = ["2epe.pdb", "2epe.dat"];
+const FILES = ["2epe.pdb", "2epe.dat", "Ag_crystal.cif"];
 const DATA = new URL("../assets/examples/", import.meta.url);
 const HELPER = new URL("run_python.py", import.meta.url);
 
@@ -47,16 +48,16 @@ async function start() {
     return { pyodide, run: helper.get("run") };
 }
 
-async function handle({ id, code, page }) {
+async function handle({ id, code, page, chain, fresh, setup }) {
     current = id;
     try {
         runtime ??= start();
         const { pyodide, run } = await runtime.catch((e) => { runtime = null; quiet = false; throw e; });
-        await pyodide.loadPackagesFromImports(code, {
+        await pyodide.loadPackagesFromImports(`${setup}\n${code}`, {
             messageCallback: (text) => text.startsWith("Loading ") && post(id, "status", { text: `${text}…` }),
         });
         post(id, "status", { text: "Running…" });
-        const result = await run(code, page);
+        const result = await run(code, page, chain, fresh, setup);
         const { error, figures } = result.toJs({ dict_converter: Object.fromEntries });
         result.destroy();
         post(id, "done", { error, figures });

@@ -1106,6 +1106,29 @@
   border-bottom-right-radius: 0;
 }
 
+/* A block that continues from the blocks above it carries a tag on top, attached to its code. */
+.md-typeset .ausaxs-run__continues {
+  display: inline-block;
+  margin-top: 1em;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.65rem;
+  color: var(--md-default-fg-color--light);
+  background-color: var(--md-code-bg-color);
+  border-bottom: 1px solid var(--ausaxs-code-border);
+  border-radius: 0.1rem 0.1rem 0 0;
+  cursor: help;
+}
+
+.md-typeset .ausaxs-run__continues::before {
+  content: "↳";
+  margin-right: 0.4em;
+}
+
+.md-typeset .ausaxs-run__continues + .highlight.run pre {
+  margin-top: 0;
+  border-top-left-radius: 0;
+}
+
 .md-typeset .highlight.run code[contenteditable] {
   outline: none;
 }
@@ -1190,6 +1213,8 @@
   font-size: 0.75em;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+  max-height: 24em; /* long output, such as a settings file, scrolls instead of stretching the page */
+  overflow-y: auto;
 }
 
 .md-typeset .ausaxs-run__output pre + pre,
