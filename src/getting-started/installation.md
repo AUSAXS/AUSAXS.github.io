@@ -48,6 +48,7 @@ If something goes wrong, see the [troubleshooting](troubleshooting.md) page.
     The rest of this documentation assumes `ausaxs` is on your `PATH`. If you would rather not change it, `python -m pyausaxs` works in place of `ausaxs` in every command, e.g. `python -m pyausaxs --version`.
 
 ## Next steps
+- **Why use AUSAXS at all?** [See what sets AUSAXS apart](../why-ausaxs.md).
 - **Use a GPU.** AUSAXS runs only on the CPU out of the box. To use your GPU, you will have to [install the GPU driver](gpu.md) first.
 - **Learn by example.** The [tutorials](../tutorials.md) walk through complete analyses of real data, from fitting protein structures to validating EM maps.
 - **Learn what AUSAXS calculates.** See the pages on [SAXS](../applications/saxs.md), [SANS](../applications/sans.md), [crystals and nanoparticles](../applications/crystals.md) and [powder diffraction](../applications/powder-diffraction.md).

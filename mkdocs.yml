@@ -51,7 +51,6 @@ theme:
 
 nav:
   - Home: index.md
-  - Why AUSAXS?: why-ausaxs.md
   - Getting started:
       - Installation: getting-started/installation.md
       - GPU acceleration: getting-started/gpu.md
@@ -59,8 +58,10 @@ nav:
       - Other installation methods:
           - Precompiled executables: getting-started/precompiled-binaries.md
           - Compiling from source: getting-started/compiling.md
+      - Why AUSAXS?: why-ausaxs.md
   - Applications:
       - Overview: applications/index.md
+      - How AUSAXS works: applications/how-it-works.md
       - SAXS: applications/saxs.md
       - SANS: applications/sans.md
       - Rigid-body refinement: applications/rigid-body-refinement.md

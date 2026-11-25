@@ -46,19 +46,19 @@ python -m pip install pyausaxs
 
     Calculate the scattering profile of a structure, with or without hydration shell and excluded volume.
 
--   :material-chart-bell-curve-cumulative:{ .lg .middle } **[Fitting data](fitting.md)**
+-   :ausaxs-fit:{ .lg .middle } **[Fitting data](fitting.md)**
 
     ---
 
     Fit a structure to SAXS data, compare excluded volume models, or plug AUSAXS into your own fit.
 
--   :material-movie-open-outline:{ .lg .middle } **[MD trajectories](trajectories.md)**
+-   :ausaxs-trajectory:{ .lg .middle } **[MD trajectories](trajectories.md)**
 
     ---
 
     Calculate the SAXS profile of every frame of a molecular dynamics trajectory, or of an ensemble.
 
--   :material-function-variant:{ .lg .middle } **[Gradients](gradients.md)**
+-   :ausaxs-gradient:{ .lg .middle } **[Gradients](gradients.md)**
 
     ---
 

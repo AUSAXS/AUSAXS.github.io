@@ -1,8 +1,6 @@
 ---
 title: Why AUSAXS? - AUSAXS
 description: "Why use AUSAXS for SAXS, SANS, and Debye calculations: fast on CPU and GPU, accurate Debye equation, and transparent about every assumption."
-hide:
-  - navigation
 ---
 
 # Why <span class="ausaxs-name"><span class="au">AU</span>SAXS</span>?
