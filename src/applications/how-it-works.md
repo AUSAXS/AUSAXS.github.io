@@ -60,6 +60,6 @@ Trying a new value of $c$ therefore only adds the same three curves with new fac
 
 ??? info "The `simple` approximation"
 
-    The default excluded volume model for SAXS, `simple`, approximates the form factors to save time. All atoms are given the same form factor shape, scaled by the _effective charge_ of each atom: its electrons minus those of the buffer it displaces. A single atom–atom histogram is then enough, with each pair counted with the product of the two effective charges. See the [SAXS page](saxs.md#how-it-works) for how the displaced buffer is found.
+    The default excluded volume model for SAXS, `simple`, approximates the form factors to save time. All atoms are given the same form factor shape, scaled by the _effective charge_ of each atom: its electrons minus those of the buffer it displaces. A single atom–atom histogram is then enough, with each pair counted with the product of the two effective charges.
 
 For a deeper description of the methods, see [Lytje & Pedersen (2025)](https://doi.org/10.1107/S160057672500562X), and for the physics of solution scattering, [Lytje, Pedersen & Hub (2026)](https://doi.org/10.1088/1361-6633/aead1d). And as AUSAXS is [open source](https://github.com/AUSAXS/AUSAXS), every detail can be checked in the code.
