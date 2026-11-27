@@ -19,7 +19,7 @@ where $r_{ij}$ is the distance between scatterers $i$ and $j$. The applications 
 
 The Debye equation has a term for every pair of scatterers. A protein with 10 000 atoms has 50 million pairs, and summing a sine for each of them at every $q$ would be slow.
 
-However, the sine only depends on the distance between the two scatterers, and the form factors only on what kind of scatterers they are. AUSAXS therefore first sorts all pair distances into histograms with bins 0.25 Å wide, one histogram for each combination of scatterer types, such as carbon–oxygen or atom–water. These are the familiar pair distance distributions $p(r)$, and the intensity follows from a much shorter sum over their bins:
+However, the sine only depends on the distance between the two scatterers, and the form factors only on what kind of scatterers they are. AUSAXS therefore first sorts all pair distances into histograms with [bins 0.25 Å wide](histogram-accuracy.md), one histogram for each combination of scatterer types, such as carbon–oxygen or atom–water. These are the familiar pair distance distributions $p(r)$, and the intensity follows from a much shorter sum over their bins:
 
 $$
 I(q) = \sum_{A,B} f_A(q) f_B(q) \sum_k p_{AB}(r_k) \frac{\sin(q r_k)}{q r_k}
@@ -29,7 +29,7 @@ where $A$ and $B$ run over the scatterer types. As there are only a few thousand
 
 ??? info "Weighted bins for ordered structures"
 
-    Placing every distance in the centre of its bin is accurate for disordered molecules like proteins. The distances in an ordered structure like a crystal, however, pile up at a few exact values, and rounding them to the bin centres distorts the profile at wide angles. AUSAXS detects such structures and switches to _weighted bins_, which also record the average distance of their contents and use it in place of the bin centre ([Lytje & Pedersen, 2025](https://doi.org/10.1107/S160057672500562X)).
+    Placing every distance in the centre of its bin is accurate for disordered molecules like proteins. The distances in an ordered structure like a crystal, however, pile up at a few exact values, and rounding them to the bin centres distorts the profile at wide angles. AUSAXS detects such structures and switches to _weighted bins_, which also record the average distance of their contents and use it in place of the bin centre ([Lytje & Pedersen, 2025](https://doi.org/10.1107/S160057672500562X)). How accurate the binned sum is, with either kind of bin, is shown in [Accuracy of the distance histogram](histogram-accuracy.md).
 
 ## Making the counting fast
 

@@ -62,6 +62,7 @@ nav:
   - Applications:
       - Overview: applications/index.md
       - How AUSAXS works: applications/how-it-works.md
+      - Accuracy of the distance histogram: applications/histogram-accuracy.md
       - SAXS: applications/saxs.md
       - SANS: applications/sans.md
       - Rigid-body refinement: applications/rigid-body-refinement.md

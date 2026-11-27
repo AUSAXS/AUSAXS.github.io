@@ -13,7 +13,7 @@ hide:
 The Debye equation describes a sample of randomly oriented particles. A crystal therefore gives no Bragg spots, since every reflection is spread over all orientations. Instead, each set of lattice planes with spacing $d$ shows up as a peak at $q = 2\pi/d$ in the profile.
 
 ## Example
-Here we calculate the scattering of a silver nanoparticle of 201 atoms, about 2 nm across, [Ag_crystal.cif](https://raw.githubusercontent.com/AUSAXS/AUSAXS/master/tests/files/Ag_crystal.cif), up to $q = 10$ Å⁻¹:
+Here we calculate the scattering of a silver nanoparticle of 201 atoms, about 2 nm across, [Ag_crystal.cif](https://raw.githubusercontent.com/AUSAXS/AUSAXS/master/tests/files/Ag_crystal.cif), up to $q = 10$ Å⁻¹. At such wide angles a bin width of 0.05 Å is needed, the default of `ausaxs debye`; see [Accuracy of the distance histogram](histogram-accuracy.md).
 
 === "Command line"
 
